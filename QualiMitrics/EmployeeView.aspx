@@ -1,14 +1,15 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MainMaster.master" AutoEventWireup="true" CodeFile="EmployeeView.aspx.cs" Inherits="EmployeeView" %>
 
+<asp:Content ID="Content3" ContentPlaceHolderID="titleContent" runat="server">
+  Employee View
+</asp:Content>
+
 <asp:Content ID="Content1" ContentPlaceHolderID="head" Runat="Server">
-
-    
-
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">
 
     <%--This is the top level for the tab containers--%>
-    <ajaxToolkit:TabContainer ID="TabContainer1" runat="server">
+    <ajaxToolkit:TabContainer ID="tcOne" runat="server">
         <%--Each tab is created by a tab panel--%>
         <%--Tab Panel 1--%>
         <ajaxToolkit:TabPanel runat="server" HeaderText="Home" ID="Tab1">

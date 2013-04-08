@@ -4,9 +4,21 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
-    <title></title>
+
+    <%--Favicon--%>
+    <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+
+    <%--Title--%>
+    <%--Put a content placeholder in there so the title can be set from any child page--%>
+    <title>
+        <asp:ContentPlaceHolder ID="titleContent" runat="server" />
+    </title>
+
+    <%--Head Content Placeholder--%>
     <asp:ContentPlaceHolder id="head" runat="server">
     </asp:ContentPlaceHolder>
+
+    <%--End Head Section--%>
 </head>
 <body>
     <form id="form1" runat="server">
