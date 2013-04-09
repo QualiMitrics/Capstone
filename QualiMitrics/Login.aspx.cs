@@ -16,6 +16,18 @@ public partial class Login : System.Web.UI.Page
     }
     protected void LoginAuth(object sender, AuthenticateEventArgs e)
     {
+
+        //NOTE: NOT CONFIGURED
+        //THINGS THAT NEED TO HAPPEN IN THE QUERY/SESSION VARIABLE
+        //Query needs to find out if they're a manager, and if so direct them to the ManagerView page, else direct them to EmployeeView page
+        //We should define what a manager is before that actually
+        //The session variable needs to then carry this data through
+        //For instance, it should pull the department the manager is in 
+        //so that the query for that page can display proper departmental statistics
+        
+
+
+
         //-----------------------
         //SQL THINGS
         //-----------------------

@@ -22,7 +22,11 @@
 </head>
 <body>
     <form id="form1" runat="server">
-
+        <div>
+            <img src="Images/256_pixels/Original_256.png" style="height: 118px; float:right" />&nbsp;
+            
+            <h2>QualiMitrics Time Off Management System</h2>
+            &nbsp;</div>
         <%-- Script manager changed per instructions given here: https://timscyclingblog.wordpress.com/2013/03/22/ajaxcontroltoolkit-version-7-0123-with-net-4-5/ --%>
         <ajaxToolkit:ToolkitScriptManager ID="ToolkitScriptManager1" runat="server">
         </ajaxToolkit:ToolkitScriptManager>
