@@ -18,11 +18,6 @@ public partial class Login : System.Web.UI.Page
     protected void LoginAuth(object sender, AuthenticateEventArgs e)
     {
 
-        
-        
-
-
-
         //-----------------------
         //SQL THINGS
         //-----------------------
@@ -82,13 +77,26 @@ public partial class Login : System.Web.UI.Page
             {
                 //If the user is authenticated their BEID is stored in the session variable
                 e.Authenticated = true;
-                Session["SessionsAreCool"] = BEID;
+                Session["QualSess"] = BEID;
+
+                //Manager check
+                bool manager = isManager(BEID);
+
+                //Redirecting to either manager or employee page
+                if (manager == true)
+                {
+                    Response.Redirect("ManagerView.aspx");
+                }
+                else
+                {
+                    Response.Redirect("EmployeeView.aspx");
+                }
             }
             else
             {
                 //If they are not authed the session var is set to null
                 e.Authenticated = false;
-                Session["SessionsAreCool"] = null;
+                Session["QualSess"] = null;
             } //END IF STATEMENT
 
 
@@ -99,63 +107,91 @@ public partial class Login : System.Web.UI.Page
     //Method to check if the user is a manager
     //Using stored procedure from this page: http://msdn.microsoft.com/en-us/library/ms124456(v=sql.100).aspx
     //Using tutorial on C# stored procedures from this page: http://msdn.microsoft.com/en-us/library/yy6y35y8(d=printer,v=vs.100).aspx
-    protected bool storedProc(string businessEI)
+    protected bool isManager(string businessEI)
     {
-        int BEID = Convert.ToInt32(businessEI);
-        SqlConnection conn = new SqlConnection();
-		SqlDataReader reader  = null;
 
-
-		// create a connection object
-        conn.ConnectionString = System.Configuration.ConfigurationManager.ConnectionStrings["AdventureWorks"].ConnectionString;
-        
-
-		SqlCommand command = new SqlCommand;
-        command.Connection = conn;
-        command.CommandText = "uspGetManagerEmployees";
-        command.CommandType = CommandType.StoredProcedure;
-
-        //adding the parameter and setting properties
-        SqlParameter param = new SqlParameter;
-        param.ParameterName = "@ManagerIDint";
-        param.SqlDbType = SqlDbType.Int;
-        param.Direction = ParameterDirection.Input;
-        param.Value = BEID;
-
-        //Add the parameter to the param collection
-        command.Parameters.Add(param);
-
-        //Open connection and execute reader
-        conn.Open();
-        reader = command.ExecuteReader();
-
-        if (reader.HasRows)
+        try
         {
-
-            //TO DO: Find recursion level, how many managed (make array possibly?)
-
-            // read the next row of the result set
-            reader.Read();
-
-            // get data from the columns of that row
-
-            //String pwHash = reader["PasswordHash"].ToString();
-            //String pwSalt = reader["PasswordSalt"].ToString();
-            //String BEID = reader["BusinessEntityID"].ToString();
-
-            // close the reader
-            reader.Close();
-
-        }
-		
-		
+            int BEID = Convert.ToInt32(businessEI);
+            SqlConnection conn = new SqlConnection();
+            SqlDataReader reader = null;
 
 
+            // create a connection object
+            conn.ConnectionString = System.Configuration.ConfigurationManager.ConnectionStrings["AdventureWorks"].ConnectionString;
+
+
+            SqlCommand command = new SqlCommand();
+            command.Connection = conn;
+            command.CommandText = "uspGetManagerEmployees";
+            command.CommandType = CommandType.StoredProcedure;
+
+            //adding the parameter and setting properties
+            SqlParameter param = new SqlParameter();
+            param.ParameterName = "@BusinessEntityID";
+            param.SqlDbType = SqlDbType.Int;
+            param.Direction = ParameterDirection.Input;
+            param.Value = BEID;
+
+            //Add the parameter to the param collection
+            command.Parameters.Add(param);
+
+            //Open connection and execute reader
+            conn.Open();
+            reader = command.ExecuteReader();
+
+
+
+            if (reader.HasRows)
+            {
+
+
+                reader.Read();
+                // read the next row of the result set
+
+                String recursion = reader["RecursionLevel"].ToString();
+
+                List<int> recList = (from IDataRecord r in reader
+                                        select (int)r["RecursionLevel"]
+                    ).ToList();
+
+                if (recList.Contains(1))
+                {
+                    reader.Close();
+                    return true;
+                    
+                }
+                else
+                {
+                    reader.Close();
+                    return false;
+                    
+                }
+
+                //
+                reader.Close();
+
+            } //End if statement
+
+            else
+            {
+                return false;
+            }
+
+
+        } //End Try 
+
+        catch (Exception e)
+        {
+            return false;
+        } //End catch
 
 
 
 
-        return true;
-    }
+
+
+
+    } //End isManager Method
 
 }

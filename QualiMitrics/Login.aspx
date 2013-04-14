@@ -9,7 +9,7 @@
 <body>
     <form id="form1" runat="server">
     <div>
-        <asp:Login ID="loginQM" runat="server"></asp:Login>
+        <asp:Login ID="loginQM" runat="server" OnAuthenticate="LoginAuth"></asp:Login>
     </div>
     </form>
 </body>
