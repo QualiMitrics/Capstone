@@ -30,6 +30,7 @@
                 <asp:CheckBox ID="chkHalfDay" runat="server" Text="Half Day" OnCheckedChanged="chkHalfDay_CheckedChanged" AutoPostBack="True" />
                 <ajaxToolkit:MutuallyExclusiveCheckBoxExtender ID="meceDays" runat="server" TargetControlID="chkDays" Key="Period"></ajaxToolkit:MutuallyExclusiveCheckBoxExtender>
                 <ajaxToolkit:MutuallyExclusiveCheckBoxExtender ID="meceHalfDay" runat="server" TargetControlID="chkHalfDay" Key="Period"></ajaxToolkit:MutuallyExclusiveCheckBoxExtender>
+                <asp:Button ID="btnTypeofTime" runat="server" Text="Button" />
                 <br />
                 <br />
 

@@ -112,6 +112,8 @@ public partial class Login : System.Web.UI.Page
 
         try
         {
+            //Converting business entity ID to int
+            //Opening sql connection
             int BEID = Convert.ToInt32(businessEI);
             SqlConnection conn = new SqlConnection();
             SqlDataReader reader = null;
@@ -120,7 +122,7 @@ public partial class Login : System.Web.UI.Page
             // create a connection object
             conn.ConnectionString = System.Configuration.ConfigurationManager.ConnectionStrings["AdventureWorks"].ConnectionString;
 
-
+            //Creating new command and setting it as a stored procedure
             SqlCommand command = new SqlCommand();
             command.Connection = conn;
             command.CommandText = "uspGetManagerEmployees";
@@ -159,13 +161,11 @@ public partial class Login : System.Web.UI.Page
                 {
                     reader.Close();
                     return true;
-                    
                 }
                 else
                 {
                     reader.Close();
                     return false;
-                    
                 }
 
                 

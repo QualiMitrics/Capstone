@@ -14,5 +14,7 @@ public partial class ManagerView : System.Web.UI.Page
         {   //if it is null, the user is redirected to the login page
             Response.Redirect("Login.aspx");
         }
+        //Response.Write(Session["QualSess"].ToString());
+        //That's how to get the value of a session variable
     }
 }
