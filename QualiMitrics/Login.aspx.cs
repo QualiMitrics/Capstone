@@ -105,91 +105,42 @@ public partial class Login : System.Web.UI.Page
 
 
     //Method to check if the user is a manager
-    //Using stored procedure from this page: http://msdn.microsoft.com/en-us/library/ms124456(v=sql.100).aspx
-    //Using tutorial on C# stored procedures from this page: http://msdn.microsoft.com/en-us/library/yy6y35y8(d=printer,v=vs.100).aspx
     protected bool isManager(string businessEI)
     {
 
-        try
+        int BEID = Convert.ToInt32(businessEI);
+
+        String query =
+            "SELECT        e1.LoginID, e1.OrganizationNode, e1.JobTitle, e2.LoginID, e2.jobtitle, e2.BusinessEntityID " +
+            "FROM            HumanResources.Employee AS e1 INNER JOIN " +
+            "             HumanResources.Employee AS e2 ON e2.[OrganizationNode].GetAncestor(1) = e1.[OrganizationNode] " +
+            "where e1.businessentityid = @BEID;";
+
+        // Establish a connection to the database server
+        SqlConnection sqlCon = new SqlConnection();
+        sqlCon.ConnectionString = System.Configuration.ConfigurationManager.ConnectionStrings["AdventureWorks"].ConnectionString;
+        sqlCon.Open();
+
+        // create a command and associate it with the connection
+        SqlCommand sqlComm = new SqlCommand();
+        sqlComm.CommandText = query;
+        sqlComm.Connection = sqlCon;
+
+        //Need to convert the parameter to the datatype in the database.  In this case, NVARCHAR (50)
+        sqlComm.Parameters.Add("@BEID", System.Data.SqlDbType.Int).Value = BEID;
+        SqlDataReader reader = sqlComm.ExecuteReader();
+
+         //-----------------------
+        //READER
+        //-----------------------
+        if (reader.HasRows)
         {
-            //Converting business entity ID to int
-            //Opening sql connection
-            int BEID = Convert.ToInt32(businessEI);
-            SqlConnection conn = new SqlConnection();
-            SqlDataReader reader = null;
-
-
-            // create a connection object
-            conn.ConnectionString = System.Configuration.ConfigurationManager.ConnectionStrings["AdventureWorks"].ConnectionString;
-
-            //Creating new command and setting it as a stored procedure
-            SqlCommand command = new SqlCommand();
-            command.Connection = conn;
-            command.CommandText = "uspGetManagerEmployees";
-            command.CommandType = CommandType.StoredProcedure;
-
-            //adding the parameter and setting properties
-            SqlParameter param = new SqlParameter();
-            param.ParameterName = "@BusinessEntityID";
-            param.SqlDbType = SqlDbType.Int;
-            param.Direction = ParameterDirection.Input;
-            param.Value = BEID;
-
-            //Add the parameter to the param collection
-            command.Parameters.Add(param);
-
-            //Open connection and execute reader
-            conn.Open();
-            reader = command.ExecuteReader();
-
-
-
-            if (reader.HasRows)
-            {
-
-
-                reader.Read();
-                // read the next row of the result set
-
-                String recursion = reader["RecursionLevel"].ToString();
-
-                List<int> recList = (from IDataRecord r in reader
-                                        select (int)r["RecursionLevel"]
-                    ).ToList();
-
-                if (recList.Contains(1))
-                {
-                    reader.Close();
-                    return true;
-                }
-                else
-                {
-                    reader.Close();
-                    return false;
-                }
-
-                
-
-            } //End if statement
-
-            else
-            {
-                return false;
-            }
-
-
-        } //End Try 
-
-        catch (Exception e)
+            return true;
+        }
+        else
         {
             return false;
-        } //End catch
-
-
-
-
-
-
+        }
 
     } //End isManager Method
 
