@@ -26,11 +26,13 @@
         <ajaxToolkit:TabPanel runat="server" HeaderText="Request Time Off" ID="Tab2">
             <ContentTemplate>
 
-                <asp:CheckBox ID="chkDays" runat="server" Text="One Day or More" OnCheckedChanged="chkDays_CheckedChanged" AutoPostBack="True" />
-                <asp:CheckBox ID="chkHalfDay" runat="server" Text="Half Day" OnCheckedChanged="chkHalfDay_CheckedChanged" AutoPostBack="True" />
+                <asp:CheckBox ID="chkDays" runat="server" Text="One Day or More" />
+                <asp:CheckBox ID="chkHalfDay" runat="server" Text="Half Day" />
+                <br />
+                <asp:Label ID="lblCheckNote" runat="server" Text="Please check an option" Visible="false"></asp:Label>
                 <ajaxToolkit:MutuallyExclusiveCheckBoxExtender ID="meceDays" runat="server" TargetControlID="chkDays" Key="Period"></ajaxToolkit:MutuallyExclusiveCheckBoxExtender>
                 <ajaxToolkit:MutuallyExclusiveCheckBoxExtender ID="meceHalfDay" runat="server" TargetControlID="chkHalfDay" Key="Period"></ajaxToolkit:MutuallyExclusiveCheckBoxExtender>
-                <asp:Button ID="btnTypeofTime" runat="server" Text="Button" />
+                <asp:Button ID="btnTypeofTime" runat="server" Text="Submit" OnClick="btnTypeofTime_Click" />
                 <br />
                 <br />
 

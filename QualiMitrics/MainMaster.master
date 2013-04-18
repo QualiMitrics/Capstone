@@ -16,6 +16,7 @@
 
     <%--Head Content Placeholder--%>
     <asp:ContentPlaceHolder id="head" runat="server">
+        
     </asp:ContentPlaceHolder>
 
     <%--End Head Section--%>
@@ -27,6 +28,7 @@
             
             <h2>QualiMitrics Time Off Management System</h2>
             &nbsp;</div>
+        <asp:Button ID="btnLogout" runat="server" Text="Log Out" />
         <%-- Script manager changed per instructions given here: https://timscyclingblog.wordpress.com/2013/03/22/ajaxcontroltoolkit-version-7-0123-with-net-4-5/ --%>
         <ajaxToolkit:ToolkitScriptManager ID="ToolkitScriptManager1" runat="server">
         </ajaxToolkit:ToolkitScriptManager>

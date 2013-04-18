@@ -28,7 +28,7 @@ public partial class Login : System.Web.UI.Page
 
         //Make the query with the parameter @username, which will an email
         String query =
-            "SELECT        Person.Password.PasswordHash, Person.Password.PasswordSalt, Person.Password.BusinessEntityID " +
+            "SELECT        Person.Password.PasswordHash, Person.Password.PasswordSalt, Person.Password.BusinessEntityID, Person.Person.FirstName, Person.Person.LastName " +
             "FROM            Person.Person INNER JOIN " +
                          "Person.EmailAddress ON Person.Person.BusinessEntityID = Person.EmailAddress.BusinessEntityID INNER JOIN " +
                          "Person.Password ON Person.Person.BusinessEntityID = Person.Password.BusinessEntityID " +
@@ -60,10 +60,14 @@ public partial class Login : System.Web.UI.Page
 
             // get data from the columns of that row
 
+            String fName = reader["FirstName"].ToString();
+            String lName = reader["LastName"].ToString();
             String pwHash = reader["PasswordHash"].ToString();
             String pwSalt = reader["PasswordSalt"].ToString();
             String BEID = reader["BusinessEntityID"].ToString();
 
+            String fullName = fName + " " + lName;
+            password = password + pwSalt;
             // close the reader
             reader.Close();
 
@@ -73,11 +77,12 @@ public partial class Login : System.Web.UI.Page
             //VERIFICATION
             //-----------------------
 
-            if (SimpleHash.VerifyHash(password, "MD5", pwHash))
+            if (SimpleHash.VerifyHash(password, "SHA1", pwHash))
             {
-                //If the user is authenticated their BEID is stored in the session variable
+                //If the user is authenticated their BEID is stored in the session variable along with their full name (for the home page)
                 e.Authenticated = true;
-                Session["QualSess"] = BEID;
+                Session["BEID"] = BEID;
+                Session["name"] = fullName;
 
                 //Manager check
                 bool manager = isManager(BEID);
@@ -85,22 +90,43 @@ public partial class Login : System.Web.UI.Page
                 //Redirecting to either manager or employee page
                 if (manager == true)
                 {
-                    Response.Redirect("ManagerView.aspx");
-                }
+                    if (BEID == "235")
+                    {
+                        Response.Redirect("HRManagerView.aspx");
+                    }
+                    else
+                    {
+                        Response.Redirect("ManagerView.aspx");
+                    }
+                    
+                } //End Manager if statement
+
                 else
                 {
-                    Response.Redirect("EmployeeView.aspx");
-                }
-            }
+                    if (BEID == "240" || BEID == "238")
+                    {
+                        Response.Redirect("RecruiterView.aspx");
+                    }
+                    else
+                    {
+                        Response.Redirect("EmployeeView.aspx");
+                    }
+                    
+                } //End Employee if statement
+
+            } //End if for verify, else is below
+
             else
             {
                 //If they are not authed the session var is set to null
                 e.Authenticated = false;
-                Session["QualSess"] = null;
-            } //END IF STATEMENT
+                Session["BEID"] = null;
+                Session["name"] = null;
+            } //END VERIFY HASH IF STATEMENT
 
 
-        } //END IF STATEMENT
+        } //END READER HAS ROWS IF STATEMENT
+
     } //END AUTH METHOD
 
 
@@ -110,6 +136,8 @@ public partial class Login : System.Web.UI.Page
 
         int BEID = Convert.ToInt32(businessEI);
 
+        //This query is selecting all the employees that the BEID in question manages.  If the reader doesn't have rows, that means that the employee
+        //in question doesn't manage anybody.
         String query =
             "SELECT        e1.LoginID, e1.OrganizationNode, e1.JobTitle, e2.LoginID, e2.jobtitle, e2.BusinessEntityID " +
             "FROM            HumanResources.Employee AS e1 INNER JOIN " +

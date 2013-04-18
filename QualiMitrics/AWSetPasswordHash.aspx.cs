@@ -23,7 +23,7 @@ public partial class AWSetPasswordHash : System.Web.UI.Page
 
         // You can decide which business entity to use
         //Using Amy Zeng, amy29@adventure-works.com
-        String businessEntityID = "12";
+        String businessEntityID = "1";
 
 
         // Establish a connection to the database server
@@ -68,12 +68,12 @@ public partial class AWSetPasswordHash : System.Web.UI.Page
 
 
             // now make a new password hash
-            String password = fName;   // ...for this example, just using the first name as the password
+            String password = fName + pwSalt;   // ...for this example, just using the first name as the password
 
             // using the SimpleHash class (which is stored in App_Code)
             // calling the ComputeHash method to create a hashed string, with MD5 hash algorithm
             string passwordHashNew =
-                   SimpleHash.ComputeHash(password, "MD5", null);
+                   SimpleHash.ComputeHash(password, "SHA1", null);
             Response.Write("<br><br>New: " + passwordHashNew);
 
             // write the new hash to the database
