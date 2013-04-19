@@ -5,8 +5,15 @@
 </asp:Content>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="Server">
+
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="Server">
+
+    <asp:SqlDataSource ID="SqlDataSource1" runat="server"></asp:SqlDataSource>
+
+    <asp:SqlDataSource ID="SqlDataSource2" runat="server"></asp:SqlDataSource>
+
+
 
     <%--This is the top level for the tab containers--%>
     <ajaxToolkit:TabContainer ID="tcOne" runat="server">

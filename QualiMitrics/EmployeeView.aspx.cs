@@ -18,6 +18,9 @@ public partial class EmployeeView : System.Web.UI.Page
         {   //if it is null, the user is redirected to the login page
             Response.Redirect("Login.aspx");
         }
+
+        
+
         
     }
 
@@ -111,32 +114,60 @@ public partial class EmployeeView : System.Web.UI.Page
                        "VALUES (@BEID, @sdate, @edate, @sickday, '0', null)";
 
         //Establishing sql connection and running insert
+        try
+        {
+            // Establish a connection to the database server
+            SqlConnection sqlCon = new SqlConnection();
+            sqlCon.ConnectionString = System.Configuration.ConfigurationManager.ConnectionStrings["AdventureWorks"].ConnectionString;
+            sqlCon.Open();
 
-        // Establish a connection to the database server
-        SqlConnection sqlCon = new SqlConnection();
-        sqlCon.ConnectionString = System.Configuration.ConfigurationManager.ConnectionStrings["AdventureWorks"].ConnectionString;
-        sqlCon.Open();
+            // create a command and associate it with the connection
+            SqlCommand sqlComm = new SqlCommand();
+            sqlComm.CommandText = insert;
+            sqlComm.Connection = sqlCon;
 
-        // create a command and associate it with the connection
-        SqlCommand sqlComm = new SqlCommand();
-        sqlComm.CommandText = insert;
-        sqlComm.Connection = sqlCon;
+            //DateTime sd = DateTime.Parse(startDate);
+            //DateTime ed = DateTime.Parse(endDate);
 
-        //DateTime sd = DateTime.Parse(startDate);
-        //DateTime ed = DateTime.Parse(endDate);
+            //Add parameters
 
-        //Add parameters
+            sqlComm.Parameters.Add("@BEID", System.Data.SqlDbType.Int).Value = BEID;
+            sqlComm.Parameters.Add("@sdate", System.Data.SqlDbType.Date).Value = startDate;
+            sqlComm.Parameters.Add("@edate", System.Data.SqlDbType.Date).Value = endDate;
+            sqlComm.Parameters.Add("@sickday", System.Data.SqlDbType.Char).Value = sickDay;
 
-        sqlComm.Parameters.Add("@BEID", System.Data.SqlDbType.Int).Value = BEID;
-        sqlComm.Parameters.Add("@sdate", System.Data.SqlDbType.Date).Value = startDate;
-        sqlComm.Parameters.Add("@edate", System.Data.SqlDbType.Date).Value = endDate;
-        sqlComm.Parameters.Add("@sickday", System.Data.SqlDbType.Char).Value = sickDay;
+            //Execute Insert statement
+            sqlComm.ExecuteNonQuery();
+            //Dispose
+            sqlComm.Dispose();
+            //Close connection
+            sqlCon.Close();
 
-        //Execute Insert statement
-        sqlComm.ExecuteNonQuery();
-        //Dispose
-        sqlComm.Dispose();
-        //Close connection
-        sqlCon.Close();
+            Response.Write(@"<script language='javascript'>alert('Your time off request has been submitted.  View your current requests in the next tab');</script>");
+            ClearControl(this);
+        }
+        catch (Exception er)
+        {
+            er.ToString;
+        }
     }
+
+    private void ClearControl( Control control )
+    {
+    var textbox = control as TextBox;
+    if (textbox != null)
+        textbox.Text = string.Empty;
+
+    var chkControl = control as CheckBox;
+    if (chkControl.Checked == true)
+        chkControl.Checked = false;
+    
+
+    foreach( Control childControl in control.Controls )
+    {
+        ClearControl( childControl );
+    }
+}
+
+
 }
