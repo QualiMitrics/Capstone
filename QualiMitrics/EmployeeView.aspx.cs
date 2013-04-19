@@ -108,7 +108,7 @@ public partial class EmployeeView : System.Web.UI.Page
 
 
         string insert = "INSERT INTO HumanResources.TimeOff " +
-                       "VALUES (@BEID, '@sdate', '@edate', '@sickday', '0', null)";
+                       "VALUES (@BEID, @sdate, @edate, @sickday, '0', null)";
 
         //Establishing sql connection and running insert
 
@@ -122,13 +122,14 @@ public partial class EmployeeView : System.Web.UI.Page
         sqlComm.CommandText = insert;
         sqlComm.Connection = sqlCon;
 
-        DateTime sd = DateTime.Parse(startDate);
-        DateTime ed = DateTime.Parse(endDate);
+        //DateTime sd = DateTime.Parse(startDate);
+        //DateTime ed = DateTime.Parse(endDate);
 
         //Add parameters
+
         sqlComm.Parameters.Add("@BEID", System.Data.SqlDbType.Int).Value = BEID;
-        sqlComm.Parameters.Add("@sdate", System.Data.SqlDbType.Date).Value = sd;
-        sqlComm.Parameters.Add("@edate", System.Data.SqlDbType.Date).Value = ed;
+        sqlComm.Parameters.Add("@sdate", System.Data.SqlDbType.Date).Value = startDate;
+        sqlComm.Parameters.Add("@edate", System.Data.SqlDbType.Date).Value = endDate;
         sqlComm.Parameters.Add("@sickday", System.Data.SqlDbType.Char).Value = sickDay;
 
         //Execute Insert statement
