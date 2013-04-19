@@ -7,6 +7,7 @@ using System.Web.UI.WebControls;
 using System.Data;
 using System.Data.SqlClient;
 using System.Text;
+using System.Globalization;
 
 public partial class EmployeeView : System.Web.UI.Page
 {
@@ -100,6 +101,11 @@ public partial class EmployeeView : System.Web.UI.Page
             sickDay = "1";
         }
 
+        
+        
+
+
+
 
         string insert = "INSERT INTO HumanResources.TimeOff " +
                        "VALUES (@BEID, '@sdate', '@edate', '@sickday', '0', null)";
@@ -116,18 +122,13 @@ public partial class EmployeeView : System.Web.UI.Page
         sqlComm.CommandText = insert;
         sqlComm.Connection = sqlCon;
 
-
-
-        SqlParameter sd = new SqlParameter("@sdate", startDate);
-        SqlParameter ed = new SqlParameter("@edate", endDate);
-
+        DateTime sd = DateTime.Parse(startDate);
+        DateTime ed = DateTime.Parse(endDate);
 
         //Add parameters
         sqlComm.Parameters.Add("@BEID", System.Data.SqlDbType.Int).Value = BEID;
-        sqlComm.Parameters.Add(sd);
-        sqlComm.Parameters.Add(ed);
-        //sqlComm.Parameters.Add("@sdate", System.Data.SqlDbType.Date).Value = startDate;
-        //sqlComm.Parameters.Add("@edate", System.Data.SqlDbType.Date).Value = endDate;
+        sqlComm.Parameters.Add("@sdate", System.Data.SqlDbType.Date).Value = sd;
+        sqlComm.Parameters.Add("@edate", System.Data.SqlDbType.Date).Value = ed;
         sqlComm.Parameters.Add("@sickday", System.Data.SqlDbType.Char).Value = sickDay;
 
         //Execute Insert statement
