@@ -16,7 +16,7 @@
             <%--Each tab panel is populated with Content Template--%>
             <ContentTemplate>
                 <p>
-                    Hello [Employee Name Placeholder], this is where you will request time off 
+                    Hello <%Response.Write(Session["name"]);%>, this is where you will request time off 
                 in the form of either spans of days or specific portions of days.  You can 
                 also check the status of your request(s) in the third tab.
                 </p>
@@ -42,6 +42,7 @@
                     <%--Start Date--%>
                     <asp:Label ID="Label2" runat="server" Text="Start Date"></asp:Label>
                     <asp:TextBox ID="txtStartDate" runat="server"></asp:TextBox><asp:ImageButton ID="CalBut" runat="server" ImageUrl="Images/Calendar_schedule.png" />
+                     &nbsp&nbsp<asp:Button ID="btnFullSubmit" runat="server" Text="Submit" OnClick="btnFullSubmit_Click" />
                     <%--Calendar Extenders work by attaching them to a textbox using TargetControlID--%>
                     <ajaxToolkit:CalendarExtender ID="ceStartDate" TargetControlID="txtStartDate" runat="server" PopupButtonID="CalBut"></ajaxToolkit:CalendarExtender>
                     <ajaxToolkit:MaskedEditExtender ID="MaskedEditExtender1" runat="server" MaskType="Date" TargetControlID="txtStartDate" Mask="99/99/9999"></ajaxToolkit:MaskedEditExtender>
@@ -58,13 +59,18 @@
                 <asp:Panel ID="pnlHalf" runat="server" Visible="false">
                     <asp:Label ID="Label1" runat="server" Text="Start Date"></asp:Label>
                     <asp:TextBox ID="txtHalfDay" runat="server"></asp:TextBox><asp:ImageButton ID="CalBut3" runat="server" ImageUrl="Images/Calendar_schedule.png" />
+                    &nbsp&nbsp<asp:Button ID="btnHalfSubmit" runat="server" Text="Submit Request" OnClick="btnHalfSubmit_Click" />
                     <%--Calendar Extenders work by attaching them to a textbox using TargetControlID--%>
                     <ajaxToolkit:CalendarExtender ID="ceHalfDay" TargetControlID="txtHalfDay" runat="server" PopupButtonID="CalBut3"></ajaxToolkit:CalendarExtender>
                     <ajaxToolkit:MaskedEditExtender ID="MaskedEditExtender3" runat="server" MaskType="Date" TargetControlID="txtHalfDay" Mask="99/99/9999"></ajaxToolkit:MaskedEditExtender>
                 </asp:Panel>
+                <%--End Half Day Panel--%>
+
+
                 <%--Type of Time Off--%>
                 <br />
                 <br />
+                <asp:CheckBox ID="chkSick" runat="server" Text="Sick Time?" />
 
             </ContentTemplate>
         </ajaxToolkit:TabPanel>

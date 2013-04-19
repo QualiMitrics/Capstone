@@ -4,6 +4,9 @@ using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using System.Data;
+using System.Data.SqlClient;
+using System.Text;
 
 public partial class EmployeeView : System.Web.UI.Page
 {
@@ -22,11 +25,13 @@ public partial class EmployeeView : System.Web.UI.Page
         //This button will make sure that the user can only submit for one type of time off at a time.
         if (chkDays.Checked == true)
         {
+            pnlHalf.Visible = false;
             pnlFull.Visible = true;
             
         }
         else if (chkHalfDay.Checked == true)
         {
+            pnlFull.Visible = true;
             pnlHalf.Visible = true;
         }
         else
@@ -36,5 +41,100 @@ public partial class EmployeeView : System.Web.UI.Page
 
 
 
+    }
+    protected void btnHalfSubmit_Click(object sender, EventArgs e)
+    {
+        String startDate, endDate;
+        startDate = endDate = txtHalfDay.Text;
+        String sickDay = "0";
+        int BEID = Convert.ToInt32(Session["BEID"]);
+
+        if (chkSick.Checked == true)
+        {
+            sickDay = "1";
+        }
+
+
+        string insert = "INSERT INTO HumanResources.TimeOff " +
+                       "VALUES (@BEID, '@sdate', '@edate', '@sickday', '0', null)";
+
+        //Establishing sql connection and running insert
+
+        // Establish a connection to the database server
+        SqlConnection sqlCon = new SqlConnection();
+        sqlCon.ConnectionString = System.Configuration.ConfigurationManager.ConnectionStrings["AdventureWorks"].ConnectionString;
+        sqlCon.Open();
+
+        // create a command and associate it with the connection
+        SqlCommand sqlComm = new SqlCommand();
+        sqlComm.CommandText = insert;
+        sqlComm.Connection = sqlCon;
+
+        //Add parameters
+        sqlComm.Parameters.Add("@BEID", System.Data.SqlDbType.Int).Value = BEID;
+        sqlComm.Parameters.Add("@sdate", System.Data.SqlDbType.Date).Value = startDate;
+        sqlComm.Parameters.Add("@edate", System.Data.SqlDbType.Date).Value = endDate;
+        sqlComm.Parameters.Add("@sickday", System.Data.SqlDbType.Char).Value = sickDay;
+
+        //Execute Insert statement
+        sqlComm.ExecuteNonQuery();
+        //Dispose
+        sqlComm.Dispose();
+        //Close connection
+        sqlCon.Close();
+
+    } //
+
+
+
+
+    protected void btnFullSubmit_Click(object sender, EventArgs e)
+    {
+        String startDate = txtStartDate.Text;
+        String endDate = txtEndDate.Text;
+        String sickDay = "0";
+        int BEID = Convert.ToInt32(Session["BEID"]);
+
+        if (chkSick.Checked == true)
+        {
+            sickDay = "1";
+        }
+
+
+        string insert = "INSERT INTO HumanResources.TimeOff " +
+                       "VALUES (@BEID, '@sdate', '@edate', '@sickday', '0', null)";
+
+        //Establishing sql connection and running insert
+
+        // Establish a connection to the database server
+        SqlConnection sqlCon = new SqlConnection();
+        sqlCon.ConnectionString = System.Configuration.ConfigurationManager.ConnectionStrings["AdventureWorks"].ConnectionString;
+        sqlCon.Open();
+
+        // create a command and associate it with the connection
+        SqlCommand sqlComm = new SqlCommand();
+        sqlComm.CommandText = insert;
+        sqlComm.Connection = sqlCon;
+
+
+
+        SqlParameter sd = new SqlParameter("@sdate", startDate);
+        SqlParameter ed = new SqlParameter("@edate", endDate);
+
+
+        //Add parameters
+        sqlComm.Parameters.Add("@BEID", System.Data.SqlDbType.Int).Value = BEID;
+        sqlComm.Parameters.Add(sd);
+        sqlComm.Parameters.Add(ed);
+        //sqlComm.Parameters.Add("@sdate", System.Data.SqlDbType.Date).Value = startDate;
+        //sqlComm.Parameters.Add("@edate", System.Data.SqlDbType.Date).Value = endDate;
+        sqlComm.Parameters.Add("@sickday", System.Data.SqlDbType.Char).Value = sickDay;
+
+        //Execute Insert statement
+        sqlComm.ExecuteNonQuery();
+        //Dispose
+        sqlComm.Dispose();
+        //Close connection
+        sqlCon.Close();
     }
 }

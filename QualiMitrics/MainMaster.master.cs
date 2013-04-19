@@ -11,4 +11,15 @@ public partial class MainMaster : System.Web.UI.MasterPage
     {
 
     }
+    protected void btnLogout_Click(object sender, EventArgs e)
+    {
+        //Killing the session
+        Session.Abandon();
+        //Removing contents of all session variables
+        Session.Contents.RemoveAll();
+        //Form signout
+        System.Web.Security.FormsAuthentication.SignOut();
+        //Bringing user back to login page
+        Response.Redirect("Login.aspx");
+    }
 }
