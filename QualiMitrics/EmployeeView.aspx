@@ -8,6 +8,7 @@
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="Server">
 
+    <%--Data Source for Details View--%>
     <asp:SqlDataSource
         ID="sdsStatus"
         runat="server"
@@ -21,11 +22,12 @@
                        Person.Person ON Employee_1.BusinessEntityID = Person.Person.BusinessEntityID
                        WHERE		(HumanResources.TimeOff.BusinessEntityID = @BEID)">
         <SelectParameters>
+            <%--This is where you define parameters based on session variables--%>
             <asp:SessionParameter Name="BEID" SessionField="BEIDINT" Type="Int32" />
         </SelectParameters>
 
     </asp:SqlDataSource>
-
+    <%--End SQL Data Source--%>
 
 
 

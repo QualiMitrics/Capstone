@@ -20,6 +20,7 @@ public partial class EmployeeView : System.Web.UI.Page
         }
         else
         {
+            //Making an int session variable for sqldatasource to use for parameter
             Session["BEIDINT"] = Convert.ToInt32(Session["BEID"]);
         }
 
@@ -164,21 +165,23 @@ public partial class EmployeeView : System.Web.UI.Page
             //Close connection
             sqlCon.Close();
 
-            Response.Write("<script>alert('This is Alert');</script>");
-            ClearControl(pnlFull);
+            Response.Write("<script>alert('Congratulations, your request has been submitted.  You may view it and any other pending requests in the Pending Requests tab.');</script>");
+            ClearControl(pnlSelections);
         }
         catch (Exception er)
         {
             Response.Write(er.ToString());
         }
     }
-
+    
+    //This method clear controls, is triggered after submission
     private void ClearControl( Control control )
     {
     var textbox = control as TextBox;
     if (textbox != null)
         textbox.Text = string.Empty;
 
+        //I still need to fix this 
     //var chkControl = control as CheckBox;
     //if (chkControl.Checked == true)
     //    chkControl.Checked = false;
