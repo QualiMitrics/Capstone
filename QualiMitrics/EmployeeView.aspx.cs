@@ -18,8 +18,29 @@ public partial class EmployeeView : System.Web.UI.Page
         {   //if it is null, the user is redirected to the login page
             Response.Redirect("Login.aspx");
         }
+        else
+        {
+            Session["BEIDINT"] = Convert.ToInt32(Session["BEID"]);
+        }
 
         
+
+        //Range validator settings
+        //This makes sure that you can't set a date before today or after 2 years from today
+
+        String today = DateTime.Now.Date.ToString("MM/dd/yyyy");
+        String twoyears = DateTime.Now.Date.AddYears(2).ToString("MM/dd/yyyy");
+
+        rvHalfDay.MinimumValue = today;
+        rvHalfDay.MaximumValue = twoyears;
+
+        rvStartDate.MinimumValue = today;
+        rvStartDate.MaximumValue = twoyears;
+        //End date has to be at least one day later than today
+        rvEndDate.MinimumValue = DateTime.Now.Date.AddDays(1).ToString("MM/dd/yyyy");
+        rvEndDate.MaximumValue = twoyears;
+
+        //End range validator settings
 
         
     }
@@ -143,12 +164,12 @@ public partial class EmployeeView : System.Web.UI.Page
             //Close connection
             sqlCon.Close();
 
-            Response.Write(@"<script language='javascript'>alert('Your time off request has been submitted.  View your current requests in the next tab');</script>");
-            ClearControl(this);
+            Response.Write("<script>alert('This is Alert');</script>");
+            ClearControl(pnlFull);
         }
         catch (Exception er)
         {
-            er.ToString;
+            Response.Write(er.ToString());
         }
     }
 
@@ -158,9 +179,9 @@ public partial class EmployeeView : System.Web.UI.Page
     if (textbox != null)
         textbox.Text = string.Empty;
 
-    var chkControl = control as CheckBox;
-    if (chkControl.Checked == true)
-        chkControl.Checked = false;
+    //var chkControl = control as CheckBox;
+    //if (chkControl.Checked == true)
+    //    chkControl.Checked = false;
     
 
     foreach( Control childControl in control.Controls )

@@ -5,13 +5,28 @@
 </asp:Content>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="Server">
-
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="Server">
 
-    <asp:SqlDataSource ID="SqlDataSource1" runat="server"></asp:SqlDataSource>
+    <asp:SqlDataSource
+        ID="sdsStatus"
+        runat="server"
+        ConnectionString="<%$ ConnectionStrings:AdventureWorks %>"
+        SelectCommand="SELECT        HumanResources.TimeOff.StartDate, HumanResources.TimeOff.EndDate, Person.Person.FirstName + Person.Person.LastName AS [Name], 
+                       CASE WHEN HumanResources.TimeOff.Sick_Vacation = '0' THEN 'No' ELSE 'Yes' END AS [Sick Time], 
+					   CASE WHEN HumanResources.TimeOff.Approval = '0' THEN 'Pending' ELSE 'Approved' END AS [Approval Status], 
+					   CASE WHEN HumanResources.TimeOff.Comments is null THEN 'None' END AS [Comments]
+                       FROM            HumanResources.TimeOff INNER JOIN
+                       HumanResources.Employee AS Employee_1 ON HumanResources.TimeOff.BusinessEntityID = Employee_1.BusinessEntityID INNER JOIN
+                       Person.Person ON Employee_1.BusinessEntityID = Person.Person.BusinessEntityID
+                       WHERE		(HumanResources.TimeOff.BusinessEntityID = @BEID)">
+        <SelectParameters>
+            <asp:SessionParameter Name="BEID" SessionField="BEIDINT" Type="Int32" />
+        </SelectParameters>
 
-    <asp:SqlDataSource ID="SqlDataSource2" runat="server"></asp:SqlDataSource>
+    </asp:SqlDataSource>
+
+
 
 
 
@@ -32,47 +47,61 @@
         <%--Tab Panel 2--%>
         <ajaxToolkit:TabPanel runat="server" HeaderText="Request Time Off" ID="Tab2">
             <ContentTemplate>
+                <%--This panel is here so that the controls can be cleared after a good submit--%>
+                <asp:Panel ID="pnlSelections" runat="server">
+                    <%--Begin Selection Controls--%>
+                    <%--Checkboxes--%>
+                    <asp:CheckBox ID="chkDays" runat="server" Text="One Day or More" />
+                    <asp:CheckBox ID="chkHalfDay" runat="server" Text="Half Day" />
+                    <br />
+                    <%--Checkbox Extenders - These make it so that only one checkbox can be selected at a time--%>
+                    <ajaxToolkit:MutuallyExclusiveCheckBoxExtender ID="meceDays" runat="server" TargetControlID="chkDays" Key="Period"></ajaxToolkit:MutuallyExclusiveCheckBoxExtender>
+                    <ajaxToolkit:MutuallyExclusiveCheckBoxExtender ID="meceHalfDay" runat="server" TargetControlID="chkHalfDay" Key="Period"></ajaxToolkit:MutuallyExclusiveCheckBoxExtender>
+                    <%--Submit Button and Error Label--%>
+                    <asp:Button ID="btnTypeofTime" runat="server" Text="Submit" OnClick="btnTypeofTime_Click" />
+                    <asp:Label ID="lblCheckNote" runat="server" Text="Please check an option" Visible="false"></asp:Label>
+                    <%--Label becomes visible if no checkbox selected--%>
+                    <br />
+                    <br />
 
-                <asp:CheckBox ID="chkDays" runat="server" Text="One Day or More" />
-                <asp:CheckBox ID="chkHalfDay" runat="server" Text="Half Day" />
-                <br />
-                <asp:Label ID="lblCheckNote" runat="server" Text="Please check an option" Visible="false"></asp:Label>
-                <ajaxToolkit:MutuallyExclusiveCheckBoxExtender ID="meceDays" runat="server" TargetControlID="chkDays" Key="Period"></ajaxToolkit:MutuallyExclusiveCheckBoxExtender>
-                <ajaxToolkit:MutuallyExclusiveCheckBoxExtender ID="meceHalfDay" runat="server" TargetControlID="chkHalfDay" Key="Period"></ajaxToolkit:MutuallyExclusiveCheckBoxExtender>
-                <asp:Button ID="btnTypeofTime" runat="server" Text="Submit" OnClick="btnTypeofTime_Click" />
-                <br />
-                <br />
+                    <%--Date Selection--%>
 
-                <%--Date Selection--%>
-                <%--Full Day--%>
-                <asp:Panel ID="pnlFull" runat="server" Visible="false">
-                    <%--Start Date--%>
-                    <asp:Label ID="Label2" runat="server" Text="Start Date"></asp:Label>
-                    <asp:TextBox ID="txtStartDate" runat="server"></asp:TextBox><asp:ImageButton ID="CalBut" runat="server" ImageUrl="Images/Calendar_schedule.png" />
-                     &nbsp&nbsp<asp:Button ID="btnFullSubmit" runat="server" Text="Submit" OnClick="btnFullSubmit_Click" />
-                    <%--Calendar Extenders work by attaching them to a textbox using TargetControlID--%>
-                    <ajaxToolkit:CalendarExtender ID="ceStartDate" TargetControlID="txtStartDate" runat="server" PopupButtonID="CalBut"></ajaxToolkit:CalendarExtender>
-                    <ajaxToolkit:MaskedEditExtender ID="MaskedEditExtender1" runat="server" MaskType="Date" TargetControlID="txtStartDate" Mask="99/99/9999"></ajaxToolkit:MaskedEditExtender>
-                    &nbsp&nbsp&nbsp
-                    <%--End Date--%>
-                    <asp:Label ID="Label3" runat="server" Text="End Date"></asp:Label>
-                    <asp:TextBox ID="txtEndDate" runat="server"></asp:TextBox><asp:ImageButton ID="CalBut2" runat="server" ImageUrl="Images/Calendar_schedule.png" />
-                    <ajaxToolkit:CalendarExtender ID="ceEndDate" TargetControlID="txtEndDate" runat="server" PopupButtonID="CalBut2"></ajaxToolkit:CalendarExtender>
-                    <ajaxToolkit:MaskedEditExtender ID="MaskedEditExtender2" runat="server" MaskType="Date" TargetControlID="txtEndDate" Mask="99/99/9999"></ajaxToolkit:MaskedEditExtender>
+                    <%--Full Day--%>
+                    <asp:Panel ID="pnlFull" runat="server" Visible="false">
+                        <%--Start Date--%>
+                        <asp:Label ID="Label2" runat="server" Text="Start Date"></asp:Label>
+                        <asp:TextBox ID="txtStartDate" runat="server"></asp:TextBox><asp:ImageButton ID="CalBut" runat="server" ImageUrl="Images/Calendar_schedule.png" />
+                        <%--Calendar Extenders work by attaching them to a textbox using TargetControlID--%>
+                        <ajaxToolkit:CalendarExtender ID="ceStartDate" TargetControlID="txtStartDate" runat="server" PopupButtonID="CalBut"></ajaxToolkit:CalendarExtender>
+                        <ajaxToolkit:MaskedEditExtender ID="MaskedEditExtender1" runat="server" MaskType="Date" TargetControlID="txtStartDate" Mask="99/99/9999"></ajaxToolkit:MaskedEditExtender>
+
+                        &nbsp&nbsp&nbsp
+                        <%--End Date--%>
+                        <asp:Label ID="Label3" runat="server" Text="End Date"></asp:Label>
+                        <asp:TextBox ID="txtEndDate" runat="server"></asp:TextBox><asp:ImageButton ID="CalBut2" runat="server" ImageUrl="Images/Calendar_schedule.png" />
+                        <ajaxToolkit:CalendarExtender ID="ceEndDate" TargetControlID="txtEndDate" runat="server" PopupButtonID="CalBut2"></ajaxToolkit:CalendarExtender>
+                        <ajaxToolkit:MaskedEditExtender ID="MaskedEditExtender2" runat="server" MaskType="Date" TargetControlID="txtEndDate" Mask="99/99/9999"></ajaxToolkit:MaskedEditExtender>
+                        &nbsp&nbsp<asp:Button ID="btnFullSubmit" runat="server" Text="Submit" OnClick="btnFullSubmit_Click" />
+                        <%--Range and Comparison Validators--%>
+                        <asp:RangeValidator ID="rvStartDate" runat="server" ErrorMessage="Please enter a valid date" ControlToValidate="txtStartDate"></asp:RangeValidator>
+                        <asp:RangeValidator ID="rvEndDate" runat="server" ErrorMessage="Please enter a valid date" ControlToValidate="txtEndDate"></asp:RangeValidator>
+                        <asp:CompareValidator ID="CompareValidator1" runat="server" ErrorMessage="Start date must be before end date" ControlToValidate="txtEndDate" ControlToCompare="txtStartDate" Operator="LessThan"></asp:CompareValidator>
+                    </asp:Panel>
+                    <%--End Full Day Panel--%>
+
+                    <%--Half Day--%>
+                    <asp:Panel ID="pnlHalf" runat="server" Visible="false">
+                        <asp:Label ID="Label1" runat="server" Text="Start Date"></asp:Label>
+                        <asp:TextBox ID="txtHalfDay" runat="server"></asp:TextBox><asp:ImageButton ID="CalBut3" runat="server" ImageUrl="Images/Calendar_schedule.png" />
+                        &nbsp&nbsp<asp:Button ID="btnHalfSubmit" runat="server" Text="Submit Request" OnClick="btnHalfSubmit_Click" />
+                        <%--Calendar Extenders work by attaching them to a textbox using TargetControlID--%>
+                        <ajaxToolkit:CalendarExtender ID="ceHalfDay" TargetControlID="txtHalfDay" runat="server" PopupButtonID="CalBut3"></ajaxToolkit:CalendarExtender>
+                        <ajaxToolkit:MaskedEditExtender ID="MaskedEditExtender3" runat="server" MaskType="Date" TargetControlID="txtHalfDay" Mask="99/99/9999"></ajaxToolkit:MaskedEditExtender>
+                        <%--Range Validator--%>
+                        <asp:RangeValidator ID="rvHalfDay" runat="server" ErrorMessage="Please enter a valid date"></asp:RangeValidator>
+                    </asp:Panel>
+                    <%--End Half Day Panel--%>
                 </asp:Panel>
-                <%--End Full Day Panel--%>
-
-                <%--Half Day--%>
-                <asp:Panel ID="pnlHalf" runat="server" Visible="false">
-                    <asp:Label ID="Label1" runat="server" Text="Start Date"></asp:Label>
-                    <asp:TextBox ID="txtHalfDay" runat="server"></asp:TextBox><asp:ImageButton ID="CalBut3" runat="server" ImageUrl="Images/Calendar_schedule.png" />
-                    &nbsp&nbsp<asp:Button ID="btnHalfSubmit" runat="server" Text="Submit Request" OnClick="btnHalfSubmit_Click" />
-                    <%--Calendar Extenders work by attaching them to a textbox using TargetControlID--%>
-                    <ajaxToolkit:CalendarExtender ID="ceHalfDay" TargetControlID="txtHalfDay" runat="server" PopupButtonID="CalBut3"></ajaxToolkit:CalendarExtender>
-                    <ajaxToolkit:MaskedEditExtender ID="MaskedEditExtender3" runat="server" MaskType="Date" TargetControlID="txtHalfDay" Mask="99/99/9999"></ajaxToolkit:MaskedEditExtender>
-                </asp:Panel>
-                <%--End Half Day Panel--%>
-
 
                 <%--Type of Time Off--%>
                 <br />
@@ -87,13 +116,31 @@
         <%--Tab Panel 3--%>
         <ajaxToolkit:TabPanel runat="server" HeaderText="Status of Current Requests" ID="Tab3">
             <ContentTemplate>
-                <p>
-                    Items to be placed:
-                <ol>
-                    <li>List of pending requests</li>
-                    <li>Formview with details, including bolded and color coded status (PENDING, APPROVED, DENIED)</li>
-                </ol>
-                </p>
+                <asp:DetailsView 
+                    ID="DetailsView1" 
+                    runat="server"
+                    DataSourceID="sdsStatus"
+                    Height="330px" 
+                    Width="500px"
+                    >
+
+
+                </asp:DetailsView>
+
+     <%--               <asp:DetailsView ID="DetailsView2" runat="server" AllowPaging="True" 
+        AutoGenerateRows="False" DataSourceID="sdsAW" Height="332px" Width="504px">
+        <Fields>
+            <asp:BoundField DataField="LastName" HeaderText="LastName" 
+                SortExpression="LastName" />
+            <asp:BoundField DataField="FirstName" HeaderText="FirstName" 
+                SortExpression="FirstName" />
+            <asp:BoundField DataField="JobTitle" HeaderText="JobTitle" 
+                SortExpression="JobTitle" />
+        </Fields>
+        <PagerSettings Mode="NumericFirstLast" />
+    </asp:DetailsView>--%>
+
+
             </ContentTemplate>
         </ajaxToolkit:TabPanel>
         <%--End Panels--%>
