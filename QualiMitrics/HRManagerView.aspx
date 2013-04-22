@@ -1,6 +1,7 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MainMaster.master" AutoEventWireup="true" CodeFile="HRManagerView.aspx.cs" Inherits="HRManagerView" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="titleContent" runat="Server">
+Human Resources Management
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="head" runat="Server">
 </asp:Content>
@@ -45,7 +46,7 @@
 
 
 
-
+    <%--<asp:UpdatePanel ID="UpdatePanel1" UpdateMode="Conditional" runat="server">--%>
     <%--This is the top level for the tab containers--%>
     <ajaxToolkit:TabContainer ID="tcOne" runat="server">
         <%--Each tab is created by a tab panel--%>
@@ -111,6 +112,6 @@
         </ajaxToolkit:TabPanel>
         <%--End Panels--%>
     </ajaxToolkit:TabContainer>
-
+    <%--</asp:UpdatePanel>--%>
 </asp:Content>
 

@@ -30,8 +30,8 @@
     <%--End SQL Data Source--%>
 
 
-
-
+    <%--Update Panel is so that any time something causes postback (the conditional part) it causes the tabs to refresh and not the page--%>
+    <%----%>
     <%--This is the top level for the tab containers--%>
     <ajaxToolkit:TabContainer ID="tcOne" runat="server">
         <%--Each tab is created by a tab panel--%>
@@ -98,9 +98,9 @@
                         &nbsp&nbsp<asp:Button ID="btnHalfSubmit" runat="server" Text="Submit Request" OnClick="btnHalfSubmit_Click" />
                         <%--Calendar Extenders work by attaching them to a textbox using TargetControlID--%>
                         <ajaxToolkit:CalendarExtender ID="ceHalfDay" TargetControlID="txtHalfDay" runat="server" PopupButtonID="CalBut3" Format="yyyy/MM/dd"></ajaxToolkit:CalendarExtender>
-                        <ajaxToolkit:MaskedEditExtender ID="MaskedEditExtender3" runat="server" MaskType="Date" TargetControlID="txtHalfDay" Mask="9999/99/99"></ajaxToolkit:MaskedEditExtender>
+                        
                         <%--Range Validator--%>
-                        <asp:RangeValidator ID="rvHalfDay" runat="server" ErrorMessage="Please enter a valid date"></asp:RangeValidator>
+                        <asp:RangeValidator ID="rvHalfDay" runat="server" ControlToValidate="txtHalfDay" ErrorMessage="Please enter a valid date"></asp:RangeValidator>
                     </asp:Panel>
                     <%--End Half Day Panel--%>
                 </asp:Panel>
@@ -116,6 +116,7 @@
 
 
         <%--Tab Panel 3--%>
+       
         <ajaxToolkit:TabPanel runat="server" HeaderText="Status of Current Requests" ID="Tab3">
             <ContentTemplate>
                 <asp:DetailsView 
@@ -125,6 +126,7 @@
                     Height="330px" 
                     Width="500px"
                     AllowPaging="true"
+                   
                     >
 
 
@@ -133,8 +135,9 @@
 
             </ContentTemplate>
         </ajaxToolkit:TabPanel>
+       
         <%--End Panels--%>
     </ajaxToolkit:TabContainer>
-
+    
 </asp:Content>
 

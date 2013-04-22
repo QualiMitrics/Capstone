@@ -1,6 +1,7 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MainMaster.master" AutoEventWireup="true" CodeFile="RecruiterView.aspx.cs" Inherits="RecruiterView" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="titleContent" Runat="Server">
+Recruitment Management
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="head" Runat="Server">
 </asp:Content>

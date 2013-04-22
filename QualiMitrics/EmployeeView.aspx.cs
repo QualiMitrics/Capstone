@@ -29,7 +29,7 @@ public partial class EmployeeView : System.Web.UI.Page
         //Range validator settings
         //This makes sure that you can't set a date before today or after 2 years from today
 
-        String today = DateTime.Now.Date.AddDays(-1).ToString("yyyy/MM/dd");
+        String today = DateTime.Now.Date.ToString("yyyy/MM/dd");
         String twoyears = DateTime.Now.Date.AddYears(2).ToString("yyyy/MM/dd");
         
 
@@ -58,7 +58,7 @@ public partial class EmployeeView : System.Web.UI.Page
         }
         else if (chkHalfDay.Checked == true)
         {
-            pnlFull.Visible = true;
+            pnlFull.Visible = false;
             pnlHalf.Visible = true;
         }
         else
@@ -71,8 +71,9 @@ public partial class EmployeeView : System.Web.UI.Page
     }
     protected void btnHalfSubmit_Click(object sender, EventArgs e)
     {
-        String startDate, endDate;
-        startDate = endDate = txtHalfDay.Text;
+        String startDate = txtHalfDay.Text;
+        String endDate = txtHalfDay.Text;
+        //startDate = endDate = txtHalfDay.Text;
         String sickDay = "0";
         int BEID = Convert.ToInt32(Session["BEID"]);
 
