@@ -11,6 +11,9 @@ using System.Globalization;
 
 public partial class EmployeeView : System.Web.UI.Page
 {
+
+    //FOR HOURS, USE select dbo.WorkTime(@sdate, @edate) / 60 AS [Hours] 
+
     protected void Page_Load(object sender, EventArgs e)
     {
         //Checking the session to see if it's null

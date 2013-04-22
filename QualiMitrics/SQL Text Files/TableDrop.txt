@@ -1,0 +1,46 @@
+USE [AdventureWorks2012]
+GO
+
+ALTER TABLE [HumanResources].[TimeOff] DROP CONSTRAINT [FK_TimeOff_Employee]
+GO
+
+/****** Object:  Table [HumanResources].[TimeOff]    Script Date: 4/21/2013 4:07:03 PM ******/
+DROP TABLE [HumanResources].[TimeOff]
+GO
+
+/****** Object:  Table [HumanResources].[TimeOff]    Script Date: 4/21/2013 4:07:03 PM ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+SET ANSI_PADDING ON
+GO
+
+CREATE TABLE [HumanResources].[TimeOff](
+	[TransactionID] [int] NOT NULL,
+	[BusinessEntityID] [int] NOT NULL,
+	[StartDate] [date] NOT NULL,
+	[EndDate] [date] NOT NULL,
+	[Sick_Vacation] [char](1) NOT NULL,
+	[Approval] [char](1) NOT NULL,
+	[Comments] [nvarchar](250) NULL,
+ CONSTRAINT [PK_TimeOff] PRIMARY KEY CLUSTERED 
+(
+	[TransactionID] ASC,
+	[BusinessEntityID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+
+SET ANSI_PADDING ON
+GO
+
+ALTER TABLE [HumanResources].[TimeOff]  WITH CHECK ADD  CONSTRAINT [FK_TimeOff_Employee] FOREIGN KEY([BusinessEntityID])
+REFERENCES [HumanResources].[Employee] ([BusinessEntityID])
+GO
+
+ALTER TABLE [HumanResources].[TimeOff] CHECK CONSTRAINT [FK_TimeOff_Employee]
+GO
