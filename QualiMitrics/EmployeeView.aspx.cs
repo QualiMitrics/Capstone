@@ -29,8 +29,9 @@ public partial class EmployeeView : System.Web.UI.Page
         //Range validator settings
         //This makes sure that you can't set a date before today or after 2 years from today
 
-        String today = DateTime.Now.Date.ToString("MM/dd/yyyy");
-        String twoyears = DateTime.Now.Date.AddYears(2).ToString("MM/dd/yyyy");
+        String today = DateTime.Now.Date.AddDays(-1).ToString("yyyy/MM/dd");
+        String twoyears = DateTime.Now.Date.AddYears(2).ToString("yyyy/MM/dd");
+        
 
         rvHalfDay.MinimumValue = today;
         rvHalfDay.MaximumValue = twoyears;
@@ -38,7 +39,7 @@ public partial class EmployeeView : System.Web.UI.Page
         rvStartDate.MinimumValue = today;
         rvStartDate.MaximumValue = twoyears;
         //End date has to be at least one day later than today
-        rvEndDate.MinimumValue = DateTime.Now.Date.AddDays(1).ToString("MM/dd/yyyy");
+        rvEndDate.MinimumValue = DateTime.Now.Date.AddDays(1).ToString("yyyy/MM/dd");
         rvEndDate.MaximumValue = twoyears;
 
         //End range validator settings
@@ -82,7 +83,7 @@ public partial class EmployeeView : System.Web.UI.Page
 
 
         string insert = "INSERT INTO HumanResources.TimeOff " +
-                       "VALUES (@BEID, '@sdate', '@edate', '@sickday', '0', null)";
+                       "VALUES (@TID, @BEID, @sdate, @edate, @sickday, 'p', null)";
 
         //Establishing sql connection and running insert
 
@@ -97,6 +98,7 @@ public partial class EmployeeView : System.Web.UI.Page
         sqlComm.Connection = sqlCon;
 
         //Add parameters
+        sqlComm.Parameters.Add("@TID", System.Data.SqlDbType.Int).Value = getTransID.getID();
         sqlComm.Parameters.Add("@BEID", System.Data.SqlDbType.Int).Value = BEID;
         sqlComm.Parameters.Add("@sdate", System.Data.SqlDbType.Date).Value = startDate;
         sqlComm.Parameters.Add("@edate", System.Data.SqlDbType.Date).Value = endDate;
@@ -109,13 +111,19 @@ public partial class EmployeeView : System.Web.UI.Page
         //Close connection
         sqlCon.Close();
 
-    } //
+        Response.Write("<script>alert('Congratulations, your request has been submitted.  You may view it and any other pending requests in the Pending Requests tab.');</script>");
+        ClearControl(pnlSelections);
+
+    } // END HALF DAY METHOD
 
 
 
 
     protected void btnFullSubmit_Click(object sender, EventArgs e)
     {
+
+        //Initializing variables, also making sure that sickday is set to 1 if they have the checkbox selected
+        //Also converting session variable to int
         String startDate = txtStartDate.Text;
         String endDate = txtEndDate.Text;
         String sickDay = "0";
@@ -126,14 +134,9 @@ public partial class EmployeeView : System.Web.UI.Page
             sickDay = "1";
         }
 
-        
-        
-
-
-
-
+        //create insert statement
         string insert = "INSERT INTO HumanResources.TimeOff " +
-                       "VALUES (@BEID, @sdate, @edate, @sickday, '0', null)";
+                       "VALUES (@TID, @BEID, @sdate, @edate, @sickday, 'p', null)";
 
         //Establishing sql connection and running insert
         try
@@ -148,11 +151,9 @@ public partial class EmployeeView : System.Web.UI.Page
             sqlComm.CommandText = insert;
             sqlComm.Connection = sqlCon;
 
-            //DateTime sd = DateTime.Parse(startDate);
-            //DateTime ed = DateTime.Parse(endDate);
 
             //Add parameters
-
+            sqlComm.Parameters.Add("@TID", System.Data.SqlDbType.Int).Value = getTransID.getID();
             sqlComm.Parameters.Add("@BEID", System.Data.SqlDbType.Int).Value = BEID;
             sqlComm.Parameters.Add("@sdate", System.Data.SqlDbType.Date).Value = startDate;
             sqlComm.Parameters.Add("@edate", System.Data.SqlDbType.Date).Value = endDate;
@@ -172,20 +173,22 @@ public partial class EmployeeView : System.Web.UI.Page
         {
             Response.Write(er.ToString());
         }
-    }
+
+    } //END FULL DAY METHOD
     
     //This method clear controls, is triggered after submission
     private void ClearControl( Control control )
     {
     var textbox = control as TextBox;
     if (textbox != null)
+    {
         textbox.Text = string.Empty;
+    }
 
-        //I still need to fix this 
-    //var chkControl = control as CheckBox;
-    //if (chkControl.Checked == true)
-    //    chkControl.Checked = false;
-    
+    chkDays.Checked = false;
+    chkHalfDay.Checked = false;
+    chkSick.Checked = false;
+
 
     foreach( Control childControl in control.Controls )
     {

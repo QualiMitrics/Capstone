@@ -15,7 +15,7 @@
         ConnectionString="<%$ ConnectionStrings:AdventureWorks %>"
         SelectCommand="SELECT        HumanResources.TimeOff.StartDate, HumanResources.TimeOff.EndDate, Person.Person.FirstName + Person.Person.LastName AS [Name], 
                        CASE WHEN HumanResources.TimeOff.Sick_Vacation = '0' THEN 'No' ELSE 'Yes' END AS [Sick Time], 
-					   CASE WHEN HumanResources.TimeOff.Approval = '0' THEN 'Pending' ELSE 'Approved' END AS [Approval Status], 
+					   CASE WHEN HumanResources.TimeOff.Approval = 'p' THEN 'Pending' WHEN HumanResources.TimeOff.Approval = 'a' THEN 'Approved' ELSE 'Denied' END AS [Approval Status], 
 					   CASE WHEN HumanResources.TimeOff.Comments is null THEN 'None' END AS [Comments]
                        FROM            HumanResources.TimeOff INNER JOIN
                        HumanResources.Employee AS Employee_1 ON HumanResources.TimeOff.BusinessEntityID = Employee_1.BusinessEntityID INNER JOIN
@@ -74,20 +74,20 @@
                         <asp:Label ID="Label2" runat="server" Text="Start Date"></asp:Label>
                         <asp:TextBox ID="txtStartDate" runat="server"></asp:TextBox><asp:ImageButton ID="CalBut" runat="server" ImageUrl="Images/Calendar_schedule.png" />
                         <%--Calendar Extenders work by attaching them to a textbox using TargetControlID--%>
-                        <ajaxToolkit:CalendarExtender ID="ceStartDate" TargetControlID="txtStartDate" runat="server" PopupButtonID="CalBut"></ajaxToolkit:CalendarExtender>
-                        <ajaxToolkit:MaskedEditExtender ID="MaskedEditExtender1" runat="server" MaskType="Date" TargetControlID="txtStartDate" Mask="99/99/9999"></ajaxToolkit:MaskedEditExtender>
-
+                        <ajaxToolkit:CalendarExtender ID="ceStartDate" TargetControlID="txtStartDate" runat="server" PopupButtonID="CalBut" Format="yyyy/MM/dd"></ajaxToolkit:CalendarExtender>
+                        
+                        
                         &nbsp&nbsp&nbsp
                         <%--End Date--%>
                         <asp:Label ID="Label3" runat="server" Text="End Date"></asp:Label>
                         <asp:TextBox ID="txtEndDate" runat="server"></asp:TextBox><asp:ImageButton ID="CalBut2" runat="server" ImageUrl="Images/Calendar_schedule.png" />
-                        <ajaxToolkit:CalendarExtender ID="ceEndDate" TargetControlID="txtEndDate" runat="server" PopupButtonID="CalBut2"></ajaxToolkit:CalendarExtender>
-                        <ajaxToolkit:MaskedEditExtender ID="MaskedEditExtender2" runat="server" MaskType="Date" TargetControlID="txtEndDate" Mask="99/99/9999"></ajaxToolkit:MaskedEditExtender>
+                        <ajaxToolkit:CalendarExtender ID="ceEndDate" TargetControlID="txtEndDate" runat="server" PopupButtonID="CalBut2" Format="yyyy/MM/dd"></ajaxToolkit:CalendarExtender>
+                        
                         &nbsp&nbsp<asp:Button ID="btnFullSubmit" runat="server" Text="Submit" OnClick="btnFullSubmit_Click" />
                         <%--Range and Comparison Validators--%>
-                        <asp:RangeValidator ID="rvStartDate" runat="server" ErrorMessage="Please enter a valid date" ControlToValidate="txtStartDate"></asp:RangeValidator>
-                        <asp:RangeValidator ID="rvEndDate" runat="server" ErrorMessage="Please enter a valid date" ControlToValidate="txtEndDate"></asp:RangeValidator>
-                        <asp:CompareValidator ID="CompareValidator1" runat="server" ErrorMessage="Start date must be before end date" ControlToValidate="txtEndDate" ControlToCompare="txtStartDate" Operator="LessThan"></asp:CompareValidator>
+                        <asp:RangeValidator ID="rvStartDate" runat="server" ErrorMessage="Please enter a valid date, yyyy/MM/dd format" ControlToValidate="txtStartDate"></asp:RangeValidator>
+                        <asp:RangeValidator ID="rvEndDate" runat="server" ErrorMessage="Please enter a valid date, yyyy/MM/dd" ControlToValidate="txtEndDate"></asp:RangeValidator>
+                        <asp:CompareValidator ID="CompareValidator1" runat="server" ErrorMessage="Start date must be before end date" ControlToValidate="txtStartDate" ControlToCompare="txtEndDate" Operator="LessThan"></asp:CompareValidator>
                     </asp:Panel>
                     <%--End Full Day Panel--%>
 
@@ -97,8 +97,8 @@
                         <asp:TextBox ID="txtHalfDay" runat="server"></asp:TextBox><asp:ImageButton ID="CalBut3" runat="server" ImageUrl="Images/Calendar_schedule.png" />
                         &nbsp&nbsp<asp:Button ID="btnHalfSubmit" runat="server" Text="Submit Request" OnClick="btnHalfSubmit_Click" />
                         <%--Calendar Extenders work by attaching them to a textbox using TargetControlID--%>
-                        <ajaxToolkit:CalendarExtender ID="ceHalfDay" TargetControlID="txtHalfDay" runat="server" PopupButtonID="CalBut3"></ajaxToolkit:CalendarExtender>
-                        <ajaxToolkit:MaskedEditExtender ID="MaskedEditExtender3" runat="server" MaskType="Date" TargetControlID="txtHalfDay" Mask="99/99/9999"></ajaxToolkit:MaskedEditExtender>
+                        <ajaxToolkit:CalendarExtender ID="ceHalfDay" TargetControlID="txtHalfDay" runat="server" PopupButtonID="CalBut3" Format="yyyy/MM/dd"></ajaxToolkit:CalendarExtender>
+                        <ajaxToolkit:MaskedEditExtender ID="MaskedEditExtender3" runat="server" MaskType="Date" TargetControlID="txtHalfDay" Mask="9999/99/99"></ajaxToolkit:MaskedEditExtender>
                         <%--Range Validator--%>
                         <asp:RangeValidator ID="rvHalfDay" runat="server" ErrorMessage="Please enter a valid date"></asp:RangeValidator>
                     </asp:Panel>
@@ -124,23 +124,11 @@
                     DataSourceID="sdsStatus"
                     Height="330px" 
                     Width="500px"
+                    AllowPaging="true"
                     >
 
 
                 </asp:DetailsView>
-
-     <%--               <asp:DetailsView ID="DetailsView2" runat="server" AllowPaging="True" 
-        AutoGenerateRows="False" DataSourceID="sdsAW" Height="332px" Width="504px">
-        <Fields>
-            <asp:BoundField DataField="LastName" HeaderText="LastName" 
-                SortExpression="LastName" />
-            <asp:BoundField DataField="FirstName" HeaderText="FirstName" 
-                SortExpression="FirstName" />
-            <asp:BoundField DataField="JobTitle" HeaderText="JobTitle" 
-                SortExpression="JobTitle" />
-        </Fields>
-        <PagerSettings Mode="NumericFirstLast" />
-    </asp:DetailsView>--%>
 
 
             </ContentTemplate>
