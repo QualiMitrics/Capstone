@@ -75,14 +75,14 @@
                         <asp:TextBox ID="txtStartDate" runat="server"></asp:TextBox><asp:ImageButton ID="CalBut" runat="server" ImageUrl="Images/Calendar_schedule.png" />
                         <%--Calendar Extenders work by attaching them to a textbox using TargetControlID--%>
                         <ajaxToolkit:CalendarExtender ID="ceStartDate" TargetControlID="txtStartDate" runat="server" PopupButtonID="CalBut" Format="yyyy/MM/dd"></ajaxToolkit:CalendarExtender>
-                        
-                        
+
+
                         &nbsp&nbsp&nbsp
                         <%--End Date--%>
                         <asp:Label ID="Label3" runat="server" Text="End Date"></asp:Label>
                         <asp:TextBox ID="txtEndDate" runat="server"></asp:TextBox><asp:ImageButton ID="CalBut2" runat="server" ImageUrl="Images/Calendar_schedule.png" />
                         <ajaxToolkit:CalendarExtender ID="ceEndDate" TargetControlID="txtEndDate" runat="server" PopupButtonID="CalBut2" Format="yyyy/MM/dd"></ajaxToolkit:CalendarExtender>
-                        
+
                         &nbsp&nbsp<asp:Button ID="btnFullSubmit" runat="server" Text="Submit" OnClick="btnFullSubmit_Click" />
                         <%--Range and Comparison Validators--%>
                         <asp:RangeValidator ID="rvStartDate" runat="server" ErrorMessage="Please enter a valid date, yyyy/MM/dd format" ControlToValidate="txtStartDate"></asp:RangeValidator>
@@ -98,7 +98,7 @@
                         &nbsp&nbsp<asp:Button ID="btnHalfSubmit" runat="server" Text="Submit Request" OnClick="btnHalfSubmit_Click" />
                         <%--Calendar Extenders work by attaching them to a textbox using TargetControlID--%>
                         <ajaxToolkit:CalendarExtender ID="ceHalfDay" TargetControlID="txtHalfDay" runat="server" PopupButtonID="CalBut3" Format="yyyy/MM/dd"></ajaxToolkit:CalendarExtender>
-                        
+
                         <%--Range Validator--%>
                         <asp:RangeValidator ID="rvHalfDay" runat="server" ControlToValidate="txtHalfDay" ErrorMessage="Please enter a valid date"></asp:RangeValidator>
                     </asp:Panel>
@@ -116,31 +116,30 @@
 
 
         <%--Tab Panel 3--%>
-       
+
         <ajaxToolkit:TabPanel runat="server" HeaderText="Status of Current Requests" ID="Tab3">
-            <ContentTemplate>
-                
-                <asp:UpdatePanel runat="server" UpdateMode="Conditional">
-
-                <asp:DetailsView 
-                    ID="DetailsView1" 
-                    runat="server"
-                    DataSourceID="sdsStatus"
-                    Height="330px" 
-                    Width="500px"
-                    AllowPaging="true"
-                   
-                    >
+            <%--Update panels are literally hitler http://forums.asp.net/t/1553854.aspx --%>
+            <asp:UpdatePanel ID="UpdatePanel1" runat="server" UpdateMode="Conditional">
+                <ContentTemplate>
 
 
-                </asp:DetailsView>
-                </asp:UpdatePanel>
 
-            </ContentTemplate>
+                    <asp:DetailsView
+                        ID="DetailsView1"
+                        runat="server"
+                        DataSourceID="sdsStatus"
+                        Height="330px"
+                        Width="500px"
+                        AllowPaging="true">
+                    </asp:DetailsView>
+
+
+                </ContentTemplate>
+            </asp:UpdatePanel>
         </ajaxToolkit:TabPanel>
-       
+
         <%--End Panels--%>
     </ajaxToolkit:TabContainer>
-    
+
 </asp:Content>
 

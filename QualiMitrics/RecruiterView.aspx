@@ -22,7 +22,32 @@ Recruitment Management
         <ajaxToolkit:TabPanel runat="server" HeaderText="Department Statistics" ID="Tab2">
             <ContentTemplate>
 
-                <p>To be: Resume review, will include employee list and submit button, then a display of a resume with an approval form</p>
+                <form id="form1" runat="server">
+    <div>
+        <br />
+        <asp:Label ID="Label2" runat="server" Text="Select the requested Job Candidate from the dropdown below to review their resume"></asp:Label>
+        <br />
+        <br />
+        <asp:Label ID="Label1" runat="server" Text="Job Candidate ID"></asp:Label>
+        <asp:DropDownList ID="DropDownList1" runat="server" 
+            DataSourceID="sdsJobCanID"
+            DataValueField = "JobCandidateID" 
+            AutoPostBack="True"                     
+            onselectedindexchanged="loadResume">
+        </asp:DropDownList>
+        <br />
+        
+        <asp:SqlDataSource ID="sdsJobCanID" 
+            ConnectionString="<%$ ConnectionStrings: AdventureWorks %>"
+            SelectCommand = "SELECT JobCandidateID FROM HumanResources.JobCandidate WHERE (BusinessEntityID IS NULL)"
+            runat="server" >
+        </asp:SqlDataSource>
+
+        <br />
+        <asp:Label ID="Output" runat="server" Text="Label"></asp:Label>
+
+    </div>
+    </form>
 
             </ContentTemplate>
         </ajaxToolkit:TabPanel>
