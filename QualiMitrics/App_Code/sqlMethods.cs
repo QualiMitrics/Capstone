@@ -9,14 +9,14 @@ using System.Text;
 /// <summary>
 /// This will determine the max transaction ID
 /// </summary>
-public class getTransID
+public class sqlMethods
 {
-	public getTransID()
-	{
-		//
-		// TODO: Add constructor logic here
-		//
-	}
+    public sqlMethods()
+    {
+        //
+        // TODO: Add constructor logic here
+        //
+    }
 
     public static int getID()
     {
@@ -76,7 +76,7 @@ public class getTransID
             {
                 return transID;
             }
-            
+
         } //END TRY
 
         catch (Exception e)
@@ -86,12 +86,73 @@ public class getTransID
         }
 
         //once again, this means that something went wrong
-        
 
 
 
-       
+
+
         //if the reader didn't have rows or got an error 
-        
+
     } //END getID() METHOD
+
+    public static int getHours(String sdate, String edate)
+    {
+        //If for whatever reason the sql statement doesn't go through, it'll return -1 so that the class accessing this method 
+        //knows that something is up (can't have negative hours and all that jazz)
+        int hours = -1;
+
+        //select dbo.WorkTime(@sdate, @edate) / 60 AS [Hours] 
+
+        try
+        {
+            //Make the query with the parameter @username, which will an email
+            String query =
+                "SELECT dbo.WorkTime(@sdate, @edate) / 60 AS [Hours]";
+
+            // Establish a connection to the database server
+            SqlConnection sqlCon = new SqlConnection();
+            sqlCon.ConnectionString = System.Configuration.ConfigurationManager.ConnectionStrings["AdventureWorks"].ConnectionString;
+            sqlCon.Open();
+
+            // create a command and associate it with the connection
+            SqlCommand sqlComm = new SqlCommand();
+            sqlComm.CommandText = query;
+            sqlComm.Connection = sqlCon;
+
+            //Need to convert the parameter to the datatype in the database.  In this case, NVARCHAR (50)
+            sqlComm.Parameters.Add("@sdate", System.Data.SqlDbType.DateTime).Value = sdate;
+            sqlComm.Parameters.Add("@edate", System.Data.SqlDbType.DateTime).Value = edate;
+            SqlDataReader reader = sqlComm.ExecuteReader();
+
+            //reader reading read things readily
+            if (reader.HasRows)
+            {
+
+                // read the next row of the result set
+                reader.Read();
+
+                // get data from the columns of that row
+
+                String shours = reader["Hours"].ToString();
+
+                // close the reader
+                reader.Close();
+                //parsing into an int for return
+                hours = int.Parse(shours);
+                return hours;
+
+            } // END IF STATEMENT
+                //same as above, return -1 if anything goes wrong so we don't crash
+            else
+            {
+                return hours;
+            }
+        }
+        catch (Exception e)
+        {
+            return hours;
+        }
+
+
+    }
 }

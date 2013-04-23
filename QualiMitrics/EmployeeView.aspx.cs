@@ -12,8 +12,6 @@ using System.Globalization;
 public partial class EmployeeView : System.Web.UI.Page
 {
 
-    //FOR HOURS, USE select dbo.WorkTime(@sdate, @edate) / 60 AS [Hours] 
-
     protected void Page_Load(object sender, EventArgs e)
     {
         //Checking the session to see if it's null
@@ -27,14 +25,14 @@ public partial class EmployeeView : System.Web.UI.Page
             Session["BEIDINT"] = Convert.ToInt32(Session["BEID"]);
         }
 
-        
+
 
         //Range validator settings
         //This makes sure that you can't set a date before today or after 2 years from today
 
         String today = DateTime.Now.Date.ToString("yyyy/MM/dd");
         String twoyears = DateTime.Now.Date.AddYears(2).ToString("yyyy/MM/dd");
-        
+
 
         rvHalfDay.MinimumValue = today;
         rvHalfDay.MaximumValue = twoyears;
@@ -47,7 +45,7 @@ public partial class EmployeeView : System.Web.UI.Page
 
         //End range validator settings
 
-        
+
     }
 
     protected void btnTypeofTime_Click(object sender, EventArgs e)
@@ -57,7 +55,7 @@ public partial class EmployeeView : System.Web.UI.Page
         {
             pnlHalf.Visible = false;
             pnlFull.Visible = true;
-            
+
         }
         else if (chkHalfDay.Checked == true)
         {
@@ -80,43 +78,55 @@ public partial class EmployeeView : System.Web.UI.Page
         String sickDay = "0";
         int BEID = Convert.ToInt32(Session["BEID"]);
 
-        if (chkSick.Checked == true)
+        //This will confirm that they can in fact take the time off that they requested.  
+        //If it's successful they'll go on to the rest of the submit method, and if not it will inform them that they're out of hours
+        bool canTake = hasHours(startDate, endDate, Convert.ToInt32(sickDay), BEID);
+
+        if (canTake == false)
         {
-            sickDay = "1";
+            Response.Write("<script>alert('You do not have sufficient vacation/sick leave left to take the requested time off.');</script>");
         }
+        else
+        {
+
+            if (chkSick.Checked == true)
+            {
+                sickDay = "1";
+            }
 
 
-        string insert = "INSERT INTO HumanResources.TimeOff " +
-                       "VALUES (@TID, @BEID, @sdate, @edate, @sickday, 'p', null)";
+            string insert = "INSERT INTO HumanResources.TimeOff " +
+                           "VALUES (@TID, @BEID, @sdate, @edate, @sickday, 'p', null)";
 
-        //Establishing sql connection and running insert
+            //Establishing sql connection and running insert
 
-        // Establish a connection to the database server
-        SqlConnection sqlCon = new SqlConnection();
-        sqlCon.ConnectionString = System.Configuration.ConfigurationManager.ConnectionStrings["AdventureWorks"].ConnectionString;
-        sqlCon.Open();
+            // Establish a connection to the database server
+            SqlConnection sqlCon = new SqlConnection();
+            sqlCon.ConnectionString = System.Configuration.ConfigurationManager.ConnectionStrings["AdventureWorks"].ConnectionString;
+            sqlCon.Open();
 
-        // create a command and associate it with the connection
-        SqlCommand sqlComm = new SqlCommand();
-        sqlComm.CommandText = insert;
-        sqlComm.Connection = sqlCon;
+            // create a command and associate it with the connection
+            SqlCommand sqlComm = new SqlCommand();
+            sqlComm.CommandText = insert;
+            sqlComm.Connection = sqlCon;
 
-        //Add parameters
-        sqlComm.Parameters.Add("@TID", System.Data.SqlDbType.Int).Value = getTransID.getID();
-        sqlComm.Parameters.Add("@BEID", System.Data.SqlDbType.Int).Value = BEID;
-        sqlComm.Parameters.Add("@sdate", System.Data.SqlDbType.Date).Value = startDate;
-        sqlComm.Parameters.Add("@edate", System.Data.SqlDbType.Date).Value = endDate;
-        sqlComm.Parameters.Add("@sickday", System.Data.SqlDbType.Char).Value = sickDay;
+            //Add parameters
+            sqlComm.Parameters.Add("@TID", System.Data.SqlDbType.Int).Value = sqlMethods.getID();
+            sqlComm.Parameters.Add("@BEID", System.Data.SqlDbType.Int).Value = BEID;
+            sqlComm.Parameters.Add("@sdate", System.Data.SqlDbType.Date).Value = startDate;
+            sqlComm.Parameters.Add("@edate", System.Data.SqlDbType.Date).Value = endDate;
+            sqlComm.Parameters.Add("@sickday", System.Data.SqlDbType.Char).Value = sickDay;
 
-        //Execute Insert statement
-        sqlComm.ExecuteNonQuery();
-        //Dispose
-        sqlComm.Dispose();
-        //Close connection
-        sqlCon.Close();
+            //Execute Insert statement
+            sqlComm.ExecuteNonQuery();
+            //Dispose
+            sqlComm.Dispose();
+            //Close connection
+            sqlCon.Close();
 
-        Response.Write("<script>alert('Congratulations, your request has been submitted.  You may view it and any other pending requests in the Pending Requests tab.');</script>");
-        ClearControl(pnlSelections);
+            Response.Write("<script>alert('Congratulations, your request has been submitted.  You may view it and any other pending requests in the Pending Requests tab.');</script>");
+            ClearControl(pnlSelections);
+        }
 
     } // END HALF DAY METHOD
 
@@ -137,14 +147,80 @@ public partial class EmployeeView : System.Web.UI.Page
         {
             sickDay = "1";
         }
+        //This will confirm that they can in fact take the time off that they requested.  
+        //If it's successful they'll go on to the rest of the submit method, and if not it will inform them that they're out of hours
+        bool canTake = hasHours(startDate, endDate, Convert.ToInt32(sickDay), BEID);
 
-        //create insert statement
-        string insert = "INSERT INTO HumanResources.TimeOff " +
-                       "VALUES (@TID, @BEID, @sdate, @edate, @sickday, 'p', null)";
+        if (canTake == false)
+        {
+            Response.Write("<script>alert('You do not have sufficient vacation/sick leave left to take the requested time off.');</script>");
+        }
+        else
+        {
 
-        //Establishing sql connection and running insert
+            //create insert statement
+            string insert = "INSERT INTO HumanResources.TimeOff " +
+                           "VALUES (@TID, @BEID, @sdate, @edate, @sickday, 'p', null)";
+
+            //Establishing sql connection and running insert
+            try
+            {
+                // Establish a connection to the database server
+                SqlConnection sqlCon = new SqlConnection();
+                sqlCon.ConnectionString = System.Configuration.ConfigurationManager.ConnectionStrings["AdventureWorks"].ConnectionString;
+                sqlCon.Open();
+
+                // create a command and associate it with the connection
+                SqlCommand sqlComm = new SqlCommand();
+                sqlComm.CommandText = insert;
+                sqlComm.Connection = sqlCon;
+
+
+                //Add parameters
+                sqlComm.Parameters.Add("@TID", System.Data.SqlDbType.Int).Value = sqlMethods.getID();
+                sqlComm.Parameters.Add("@BEID", System.Data.SqlDbType.Int).Value = BEID;
+                sqlComm.Parameters.Add("@sdate", System.Data.SqlDbType.Date).Value = startDate;
+                sqlComm.Parameters.Add("@edate", System.Data.SqlDbType.Date).Value = endDate;
+                sqlComm.Parameters.Add("@sickday", System.Data.SqlDbType.Char).Value = sickDay;
+
+                //Execute Insert statement
+                sqlComm.ExecuteNonQuery();
+                //Dispose
+                sqlComm.Dispose();
+                //Close connection
+                sqlCon.Close();
+
+                Response.Write("<script>alert('Congratulations, your request has been submitted.  You may view it and any other pending requests in the Pending Requests tab.');</script>");
+                ClearControl(pnlSelections);
+            }
+            catch (Exception er)
+            {
+                Response.Write(er.ToString());
+            }
+        }
+    } //END FULL DAY METHOD
+
+
+    //-------------------------------------------
+    //Misc Methods
+    //-------------------------------------------
+
+    //This method checks the hours in a period of time selected by employee
+    //and checks to make sure they have availble hours for that timespan
+    //Will return true if the employee has sufficient hours 
+    //Will return false if employee lacks sufficient hours
+    private Boolean hasHours(String sdate, String edate, int sickChk, int BEID)
+    {
+        //Find out how many hours the employee is requesting
+        int reqHours = sqlMethods.getHours(sdate, edate);
+
         try
         {
+            string query =
+                "SELECT VacationHours AS [VHours], SickLeaveHours AS [SHours], BusinessEntityID AS [BEID] " +
+                "FROM HumanResources.Employee " +
+                "WHERE BusinessEntityID = @BEID";
+
             // Establish a connection to the database server
             SqlConnection sqlCon = new SqlConnection();
             sqlCon.ConnectionString = System.Configuration.ConfigurationManager.ConnectionStrings["AdventureWorks"].ConnectionString;
@@ -152,53 +228,101 @@ public partial class EmployeeView : System.Web.UI.Page
 
             // create a command and associate it with the connection
             SqlCommand sqlComm = new SqlCommand();
-            sqlComm.CommandText = insert;
+            sqlComm.CommandText = query;
             sqlComm.Connection = sqlCon;
 
-
-            //Add parameters
-            sqlComm.Parameters.Add("@TID", System.Data.SqlDbType.Int).Value = getTransID.getID();
+            //Need to convert the parameter to the datatype in the database.  In this case, NVARCHAR (50)
             sqlComm.Parameters.Add("@BEID", System.Data.SqlDbType.Int).Value = BEID;
-            sqlComm.Parameters.Add("@sdate", System.Data.SqlDbType.Date).Value = startDate;
-            sqlComm.Parameters.Add("@edate", System.Data.SqlDbType.Date).Value = endDate;
-            sqlComm.Parameters.Add("@sickday", System.Data.SqlDbType.Char).Value = sickDay;
+            SqlDataReader reader = sqlComm.ExecuteReader();
 
-            //Execute Insert statement
-            sqlComm.ExecuteNonQuery();
-            //Dispose
-            sqlComm.Dispose();
-            //Close connection
-            sqlCon.Close();
+            if (reader.HasRows)
+            {
 
-            Response.Write("<script>alert('Congratulations, your request has been submitted.  You may view it and any other pending requests in the Pending Requests tab.');</script>");
-            ClearControl(pnlSelections);
-        }
-        catch (Exception er)
+                // read the next row of the result set
+                reader.Read();
+
+                // get data from the columns of that row
+
+                String vacHours = reader["VHours"].ToString();
+                String sickHours = reader["SHours"].ToString();
+
+                //Make int version of the hour totals
+                int sHours = int.Parse(sickHours);
+                int vHours = int.Parse(vacHours);
+
+                // close the reader
+                reader.Close();
+
+                //If they're using sick days, check sick hours etc
+                //Yes this code is hideous I know
+                if (sickChk == 1)
+                {
+                    if (reqHours > sHours)
+                    {
+                        return false;
+                    }
+                    else
+                    {
+                        return true;
+                    }
+
+                } //END SICK CHECK IF
+                else
+                {
+                    if (reqHours > vHours)
+                    {
+                        return false;
+                    }
+                    else
+                    {
+                        return true;
+                    }
+                }
+            } //END READER IF
+
+            else
+            {
+                return false;
+            }
+
+
+        } //END TRY
+        catch (Exception e)
         {
-            Response.Write(er.ToString());
+            Response.Write(e.ToString());
+            return false;
         }
 
-    } //END FULL DAY METHOD
-    
-    //This method clear controls, is triggered after submission
-    private void ClearControl( Control control )
+        
+    } //END hasHours METHOD
+
+
+
+
+    //This method clears controls and resets panel visibility
+    private void ClearControl(Control control)
     {
-    var textbox = control as TextBox;
-    if (textbox != null)
-    {
-        textbox.Text = string.Empty;
+        //Clearing all textboxes
+        var textbox = control as TextBox;
+        if (textbox != null)
+        {
+            textbox.Text = string.Empty;
+        }
+        //Making sure that all the checkboxes are unselected
+        chkDays.Checked = false;
+        chkHalfDay.Checked = false;
+        chkSick.Checked = false;
+        //Making all the panels invisible again
+        pnlFull.Visible = false;
+        pnlHalf.Visible = false;
+        
+
+        //woooo recursion is cool
+        foreach (Control childControl in control.Controls)
+        {
+            ClearControl(childControl);
+        }
     }
-
-    chkDays.Checked = false;
-    chkHalfDay.Checked = false;
-    chkSick.Checked = false;
-
-
-    foreach( Control childControl in control.Controls )
-    {
-        ClearControl( childControl );
-    }
-}
 
 
 }

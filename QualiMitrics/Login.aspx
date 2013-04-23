@@ -10,6 +10,7 @@
     <form id="form1" runat="server">
     <div>
         <asp:Login ID="loginQM" runat="server" OnAuthenticate="LoginAuth"></asp:Login>
+        <asp:CheckBox ID="CheckBox1" runat="server" Text="Login to Management Suite?" />
     </div>
     </form>
 </body>

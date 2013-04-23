@@ -4,13 +4,12 @@ using System.Linq;
 using System.Web;
 
 /// <summary>
-/// Summary description for ManagerSQ
+/// This class exists solely to hold stored procedure logic in case we need to use it 
 /// </summary>
 public class ManagerSQ
 {
 	public ManagerSQ()
 	{
-
         //Using stored procedure from this page: http://msdn.microsoft.com/en-us/library/ms124456(v=sql.100).aspx
         //Using tutorial on C# stored procedures from this page: http://msdn.microsoft.com/en-us/library/yy6y35y8(d=printer,v=vs.100).aspx
         //try

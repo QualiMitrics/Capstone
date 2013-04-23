@@ -25,6 +25,9 @@ public partial class Login : System.Web.UI.Page
         //making strings for the login fields
         string email = loginQM.UserName;
         string password = loginQM.Password;
+        bool managerSuite = false;
+
+        if (CheckBox1.Checked == true) { managerSuite = true; }
 
         //Make the query with the parameter @username, which will an email
         String query =
@@ -86,34 +89,40 @@ public partial class Login : System.Web.UI.Page
 
                 //Manager check
                 bool manager = isManager(BEID);
-
-                //Redirecting to either manager or employee page
-                if (manager == true)
+                if (managerSuite == true)
                 {
-                    if (BEID == "235")
+                    //Redirecting to either manager or employee page
+                    if (manager == true)
                     {
-                        Response.Redirect("HRManagerView.aspx");
-                    }
+                        if (BEID == "235")
+                        {
+                            Response.Redirect("HRManagerView.aspx");
+                        }
+                        else
+                        {
+                            Response.Redirect("ManagerView.aspx");
+                        }
+
+                    } //End Manager if statement
+
+
                     else
                     {
-                        Response.Redirect("ManagerView.aspx");
-                    }
-                    
-                } //End Manager if statement
+                        if (BEID == "240" || BEID == "238")
+                        {
+                            Response.Redirect("RecruiterView.aspx");
+                        }
+                        else
+                        {
+                            Response.Redirect("EmployeeView.aspx");
+                        }
 
+                    } //End Employee if statement
+                }
                 else
                 {
-                    if (BEID == "240" || BEID == "238")
-                    {
-                        Response.Redirect("RecruiterView.aspx");
-                    }
-                    else
-                    {
-                        Response.Redirect("EmployeeView.aspx");
-                    }
-                    
-                } //End Employee if statement
-
+                    Response.Redirect("EmployeeView.aspx");
+                }
             } //End if for verify, else is below
 
             else
@@ -158,7 +167,7 @@ public partial class Login : System.Web.UI.Page
         sqlComm.Parameters.Add("@BEID", System.Data.SqlDbType.Int).Value = BEID;
         SqlDataReader reader = sqlComm.ExecuteReader();
 
-         //-----------------------
+        //-----------------------
         //READER
         //-----------------------
         if (reader.HasRows)
@@ -171,5 +180,6 @@ public partial class Login : System.Web.UI.Page
         }
 
     } //End isManager Method
+
 
 }
