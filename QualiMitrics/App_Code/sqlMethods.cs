@@ -152,7 +152,56 @@ public class sqlMethods
         {
             return hours;
         }
+        
 
+    } //END getHours METHOD
+
+    public static void updateHours(int newHours, int BEID, int flag)
+    {
+
+        //create update statement
+            string update = "UPDATE HumanResources.Employee " +
+                            "SET @type = @hours " +
+                            "WHERE BusinessEntityID = @BEID";
+
+            //Establishing sql connection and running update
+            try
+            {
+                // Establish a connection to the database server
+                SqlConnection sqlCon = new SqlConnection();
+                sqlCon.ConnectionString = System.Configuration.ConfigurationManager.ConnectionStrings["AdventureWorks"].ConnectionString;
+                sqlCon.Open();
+
+                // create a command and associate it with the connection
+                SqlCommand sqlComm = new SqlCommand();
+                sqlComm.CommandText = update;
+                sqlComm.Connection = sqlCon;
+
+
+                //Add parameters
+                sqlComm.Parameters.Add("@hours", System.Data.SqlDbType.Int).Value = newHours;
+                sqlComm.Parameters.Add("@BEID", System.Data.SqlDbType.Int).Value = BEID;
+                //flag for identifying 
+                if (flag == 1)
+                {
+                    sqlComm.Parameters.Add("@type", SqlDbType.NVarChar).Value = "SickLeaveHours";
+                }
+                else 
+                {
+                    sqlComm.Parameters.Add("@type", SqlDbType.NVarChar).Value = "VacationHours";
+                }
+
+                //Execute Insert statement
+                sqlComm.ExecuteNonQuery();
+                //Dispose
+                sqlComm.Dispose();
+                //Close connection
+                sqlCon.Close();
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
 
     }
 }
