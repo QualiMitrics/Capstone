@@ -119,6 +119,9 @@
        
         <ajaxToolkit:TabPanel runat="server" HeaderText="Status of Current Requests" ID="Tab3">
             <ContentTemplate>
+                
+                <asp:UpdatePanel runat="server" UpdateMode="Conditional">
+
                 <asp:DetailsView 
                     ID="DetailsView1" 
                     runat="server"
@@ -131,7 +134,7 @@
 
 
                 </asp:DetailsView>
-
+                </asp:UpdatePanel>
 
             </ContentTemplate>
         </ajaxToolkit:TabPanel>
