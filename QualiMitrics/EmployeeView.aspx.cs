@@ -74,7 +74,7 @@ public partial class EmployeeView : System.Web.UI.Page
     {
         String startDate = txtHalfDay.Text;
         String endDate = txtHalfDay.Text;
-        //startDate = endDate = txtHalfDay.Text;
+        
         String sickDay = "0";
         int BEID = Convert.ToInt32(Session["BEID"]);
 
@@ -263,7 +263,8 @@ public partial class EmployeeView : System.Web.UI.Page
                     }
                     else
                     {
-
+                        //pass the new hours, the BEID and the sicktime flag to the update method
+                        sqlMethods.updateHours((sHours-reqHours), BEID, sickChk);
                         return true;
                     }
 
@@ -276,6 +277,8 @@ public partial class EmployeeView : System.Web.UI.Page
                     }
                     else
                     {
+                        //pass the new hours, the BEID and the sicktime flag to the update method
+                        sqlMethods.updateHours((vHours-reqHours), BEID, sickChk);
                         return true;
                     }
                 }

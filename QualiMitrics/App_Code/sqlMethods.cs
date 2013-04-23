@@ -160,43 +160,40 @@ public class sqlMethods
     {
 
         //create update statement
-            string update = "UPDATE HumanResources.Employee " +
-                            "SET @type = @hours " +
-                            "WHERE BusinessEntityID = @BEID";
+            
 
             //Establishing sql connection and running update
             try
             {
-                // Establish a connection to the database server
-                SqlConnection sqlCon = new SqlConnection();
-                sqlCon.ConnectionString = System.Configuration.ConfigurationManager.ConnectionStrings["AdventureWorks"].ConnectionString;
-                sqlCon.Open();
+                SqlCommand cmd = new SqlCommand();
+                SqlConnection con = new SqlConnection();
+                con.ConnectionString = System.Configuration.ConfigurationManager.ConnectionStrings["AdventureWorks"].ConnectionString;
 
-                // create a command and associate it with the connection
-                SqlCommand sqlComm = new SqlCommand();
-                sqlComm.CommandText = update;
-                sqlComm.Connection = sqlCon;
-
+                cmd.Connection = con;
+                cmd.CommandText = "hoursUpdate";
+                cmd.CommandType = CommandType.StoredProcedure;
 
                 //Add parameters
-                sqlComm.Parameters.Add("@hours", System.Data.SqlDbType.Int).Value = newHours;
-                sqlComm.Parameters.Add("@BEID", System.Data.SqlDbType.Int).Value = BEID;
+                cmd.Parameters.Add("@hours", System.Data.SqlDbType.Int).Value = newHours;
+                cmd.Parameters.Add("@BEID", System.Data.SqlDbType.Int).Value = BEID;
                 //flag for identifying 
                 if (flag == 1)
                 {
-                    sqlComm.Parameters.Add("@type", SqlDbType.NVarChar).Value = "SickLeaveHours";
+                    cmd.Parameters.Add("@tot", System.Data.SqlDbType.NVarChar).Value = "SickLeaveHours";
                 }
                 else 
                 {
-                    sqlComm.Parameters.Add("@type", SqlDbType.NVarChar).Value = "VacationHours";
+                    cmd.Parameters.Add("@tot", System.Data.SqlDbType.NVarChar).Value = "VacationHours";
                 }
 
-                //Execute Insert statement
-                sqlComm.ExecuteNonQuery();
-                //Dispose
-                sqlComm.Dispose();
+                
+                con.Open();
+                cmd.ExecuteNonQuery();
+
+
+                cmd.Dispose();
                 //Close connection
-                sqlCon.Close();
+                con.Close();
             }
             catch (Exception e)
             {
