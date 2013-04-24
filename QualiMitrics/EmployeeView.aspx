@@ -1,5 +1,7 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MainMaster.master" AutoEventWireup="true" CodeFile="EmployeeView.aspx.cs" Inherits="EmployeeView" %>
 
+<%@ Register Assembly="Microsoft.ReportViewer.WebForms, Version=10.0.0.0, Culture=neutral, PublicKeyToken=B03F5F7F11D50A3A" Namespace="Microsoft.Reporting.WebForms" TagPrefix="rsweb" %>
+
 <asp:Content ID="Content3" ContentPlaceHolderID="titleContent" runat="server">
     Employee View
 </asp:Content>
@@ -7,7 +9,7 @@
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="Server">
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="Server">
-
+    
     <%--Data Source for Details View--%>
     <asp:SqlDataSource
         ID="sdsStatus"
@@ -44,6 +46,7 @@
                 in the form of either spans of days or specific portions of days.  You can 
                 also check the status of your request(s) in the third tab.
                 </p>
+                <rsweb:ReportViewer ID="ReportViewer1" runat="server"></rsweb:ReportViewer>
             </ContentTemplate>
         </ajaxToolkit:TabPanel>
         <%--Tab Panel 2--%>
