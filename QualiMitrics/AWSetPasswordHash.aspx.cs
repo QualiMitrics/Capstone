@@ -23,7 +23,7 @@ public partial class AWSetPasswordHash : System.Web.UI.Page
 
         // You can decide which business entity to use
         //Using Amy Zeng, amy29@adventure-works.com
-        String businessEntityID = "238";
+        String businessEntityID = "235";
 
 
         // Establish a connection to the database server

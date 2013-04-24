@@ -51,7 +51,7 @@
                     SelectCommand="SELECT        HumanResources.TimeOff.TransactionID, HumanResources.TimeOff.StartDate, HumanResources.TimeOff.EndDate, Person.Person.FirstName + ' ' + Person.Person.LastName AS [Name], 
                        CASE WHEN HumanResources.TimeOff.Sick_Vacation = '0' THEN 'No' ELSE 'Yes' END AS [Sick Time], 
 					   CASE WHEN HumanResources.TimeOff.Approval = 'p' THEN 'Pending' WHEN HumanResources.TimeOff.Approval = 'a' THEN 'Approved' ELSE 'Denied' END AS [Approval Status], 
-					   CASE WHEN HumanResources.TimeOff.Comments is null THEN 'None' ELSE END AS [Comments]
+					   CASE WHEN HumanResources.TimeOff.Comments is null THEN 'None' END AS [Comments]
                        FROM            HumanResources.TimeOff INNER JOIN
                        HumanResources.Employee AS Employee_1 ON HumanResources.TimeOff.BusinessEntityID = Employee_1.BusinessEntityID INNER JOIN
                        Person.Person ON Employee_1.BusinessEntityID = Person.Person.BusinessEntityID

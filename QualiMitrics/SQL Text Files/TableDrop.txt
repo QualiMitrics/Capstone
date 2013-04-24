@@ -1,12 +1,6 @@
 USE [AdventureWorks2012]
 GO
 
-ALTER TABLE [HumanResources].[TimeOff] DROP CONSTRAINT [FK_TimeOff_Employee]
-GO
-
-/****** Object:  Table [HumanResources].[TimeOff]    Script Date: 4/21/2013 4:07:03 PM ******/
-DROP TABLE [HumanResources].[TimeOff]
-GO
 
 /****** Object:  Table [HumanResources].[TimeOff]    Script Date: 4/21/2013 4:07:03 PM ******/
 SET ANSI_NULLS ON
