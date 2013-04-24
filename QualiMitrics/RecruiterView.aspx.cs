@@ -18,7 +18,15 @@ public partial class RecruiterView : System.Web.UI.Page
     String s = "";
     protected void Page_Load(object sender, EventArgs e)
     {
-        
+        if (Session["BEID"] == null)
+        {   //if it is null, the user is redirected to the login page
+            Response.Redirect("Login.aspx");
+        }
+        else
+        {
+            //Making an int session variable for sqldatasource to use for parameter
+            Session["BEIDINT"] = Convert.ToInt32(Session["BEID"]);
+        }
 
     }
     protected void loadResume(object sender, EventArgs e)

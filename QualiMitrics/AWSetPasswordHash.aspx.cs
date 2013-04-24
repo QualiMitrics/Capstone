@@ -14,16 +14,11 @@ public partial class AWSetPasswordHash : System.Web.UI.Page
     protected void Page_Load(object sender, EventArgs e)
     {
 
-        // This code queries the AdventureWorks database to get name and password information for a particular person
-        // This is what it does:
-        //   1) Retrieves and displays the person's name, PasswordHash, and PasswordSalt 
-        //   2) Uses a hashing algorithm to create a new PasswordHash for the person
-        //   3) Writes the new password hash out to the Password table
+        
 
 
-        // You can decide which business entity to use
-        //Using Amy Zeng, amy29@adventure-works.com
-        String businessEntityID = "235";
+        //ENTER EMPLOYEE BEID HERE
+        String businessEntityID = "1";
 
 
         // Establish a connection to the database server
@@ -71,7 +66,7 @@ public partial class AWSetPasswordHash : System.Web.UI.Page
             String password = fName + pwSalt;   // ...for this example, just using the first name as the password
 
             // using the SimpleHash class (which is stored in App_Code)
-            // calling the ComputeHash method to create a hashed string, with MD5 hash algorithm
+            // calling the ComputeHash method to create a hashed string, with SHA1 hash algorithm
             string passwordHashNew =
                    SimpleHash.ComputeHash(password, "SHA1", null);
             Response.Write("<br><br>New: " + passwordHashNew);

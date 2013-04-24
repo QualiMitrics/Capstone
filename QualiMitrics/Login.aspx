@@ -4,7 +4,7 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
-    <title>Login to QualiMitrics TOMS</title>
+    <title>AdventureWorks Time Off / Management Application</title>
 </head>
 <body>
     <form id="form1" runat="server">

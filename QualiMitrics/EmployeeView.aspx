@@ -83,11 +83,12 @@
                         <asp:TextBox ID="txtEndDate" runat="server"></asp:TextBox><asp:ImageButton ID="CalBut2" runat="server" ImageUrl="Images/Calendar_schedule.png" />
                         <ajaxToolkit:CalendarExtender ID="ceEndDate" TargetControlID="txtEndDate" runat="server" PopupButtonID="CalBut2" Format="yyyy/MM/dd"></ajaxToolkit:CalendarExtender>
 
-                        &nbsp&nbsp<asp:Button ID="btnFullSubmit" runat="server" Text="Submit" OnClick="btnFullSubmit_Click" />
+                        &nbsp&nbsp<asp:Button ID="btnFullSubmit" runat="server" Text="Submit Request" OnClick="btnFullSubmit_Click" />
                         <%--Range and Comparison Validators--%>
-                        <asp:RangeValidator ID="rvStartDate" runat="server" ErrorMessage="Please enter a valid date, yyyy/MM/dd format" ControlToValidate="txtStartDate"></asp:RangeValidator>
-                        <asp:RangeValidator ID="rvEndDate" runat="server" ErrorMessage="Please enter a valid date, yyyy/MM/dd" ControlToValidate="txtEndDate"></asp:RangeValidator>
-                        <asp:CompareValidator ID="CompareValidator1" runat="server" ErrorMessage="Start date must be before end date" ControlToValidate="txtStartDate" ControlToCompare="txtEndDate" Operator="LessThan"></asp:CompareValidator>
+                        <br />
+                        <asp:RangeValidator ID="rvStartDate" runat="server" ErrorMessage="Please enter a valid date, yyyy/MM/dd format and today or later" ControlToValidate="txtStartDate"></asp:RangeValidator><br />
+                        <asp:RangeValidator ID="rvEndDate" runat="server" ErrorMessage="Please enter a valid date, yyyy/MM/dd and today or later" ControlToValidate="txtEndDate"></asp:RangeValidator><br />
+                        <asp:CompareValidator ID="CompareValidator1" runat="server" ErrorMessage="Start date must be before end date" ControlToValidate="txtStartDate" ControlToCompare="txtEndDate" Operator="LessThan"></asp:CompareValidator><br />
                     </asp:Panel>
                     <%--End Full Day Panel--%>
 
@@ -97,7 +98,7 @@
                         <asp:TextBox ID="txtHalfDay" runat="server"></asp:TextBox><asp:ImageButton ID="CalBut3" runat="server" ImageUrl="Images/Calendar_schedule.png" />
                         &nbsp&nbsp<asp:Button ID="btnHalfSubmit" runat="server" Text="Submit Request" OnClick="btnHalfSubmit_Click" />
                         <%--Calendar Extenders work by attaching them to a textbox using TargetControlID--%>
-                        <ajaxToolkit:CalendarExtender ID="ceHalfDay" TargetControlID="txtHalfDay" runat="server" PopupButtonID="CalBut3" Format="yyyy/MM/dd"></ajaxToolkit:CalendarExtender>
+                        <ajaxToolkit:CalendarExtender ID="ceHalfDay" TargetControlID="txtHalfDay" runat="server" PopupButtonID="CalBut3" Format="yyyy/MM/dd"></ajaxToolkit:CalendarExtender><br />
 
                         <%--Range Validator--%>
                         <asp:RangeValidator ID="rvHalfDay" runat="server" ControlToValidate="txtHalfDay" ErrorMessage="Please enter a valid date"></asp:RangeValidator>
@@ -134,7 +135,7 @@
                         Width="500px"
                         AllowPaging="true">
                     </asp:DetailsView>
-                    
+                    <asp:Button ID="btnRefresh" runat="server" Text="Refresh" OnClick="btnRefresh_Click" />
 
                 </ContentTemplate>
          
