@@ -120,10 +120,12 @@
         <ajaxToolkit:TabPanel runat="server" HeaderText="Status of Current Requests" ID="Tab3">
             <%--Update panels are literally hitler http://forums.asp.net/t/1553854.aspx --%>
             
+           
+
                 <ContentTemplate>
 
 
-
+                    
                     <asp:DetailsView
                         ID="DetailsView1"
                         runat="server"
@@ -132,12 +134,12 @@
                         Width="500px"
                         AllowPaging="true">
                     </asp:DetailsView>
-
+                    
 
                 </ContentTemplate>
-          
+         
         </ajaxToolkit:TabPanel>
-
+        
         <%--End Panels--%>
     </ajaxToolkit:TabContainer>
 

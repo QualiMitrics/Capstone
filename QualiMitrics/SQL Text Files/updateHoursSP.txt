@@ -1,0 +1,6 @@
+CREATE PROCEDURE [dbo].[hoursUpdate]	@tot nvarchar(127),
+                                 	@beid int,
+					@hours int AS
+EXEC('UPDATE HumanResources.Employee 
+      SET ' + @tot + ' = ' + @hours + '
+      WHERE BusinessEntityID = ' + @beid + '' )

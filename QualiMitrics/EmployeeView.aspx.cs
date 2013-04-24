@@ -12,6 +12,14 @@ using System.Globalization;
 public partial class EmployeeView : System.Web.UI.Page
 {
 
+    //TO DO
+    //    Add session variables to all pages
+    //    Fix refresh issues
+    //    make sure sql stuff goes all in one query
+    //    make sure all features evidenced by three logins
+    //        recruiter, hrmanager and ceo logging in basically
+
+
     protected void Page_Load(object sender, EventArgs e)
     {
         //Checking the session to see if it's null
@@ -126,6 +134,8 @@ public partial class EmployeeView : System.Web.UI.Page
 
             Response.Write("<script>alert('Congratulations, your request has been submitted.  You may view it and any other pending requests in the Pending Requests tab.');</script>");
             ClearControl(pnlSelections);
+            //Also try http://www.w3schools.com/jsref/met_loc_reload.asp if this doesn't work either
+            Response.Redirect(Request.RawUrl);
         }
 
     } // END HALF DAY METHOD
