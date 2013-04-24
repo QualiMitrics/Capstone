@@ -4,14 +4,21 @@ using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using System.Text;
+using System.IO;
+
+using System.Xml; //needed for XML processing *//
 using System.Data;
 using System.Data.SqlClient;
-using System.Xml;
+
+
 
 public partial class RecruiterView : System.Web.UI.Page
 {
+    String s = "";
     protected void Page_Load(object sender, EventArgs e)
     {
+        
 
     }
     protected void loadResume(object sender, EventArgs e)
@@ -45,8 +52,7 @@ public partial class RecruiterView : System.Web.UI.Page
             if (reader.Read())
             {
 
-                String s = (String)reader["Resume"];
-
+                s = (String)reader["Resume"];
                 xmlDoc.LoadXml(s);
 
             }
@@ -58,38 +64,83 @@ public partial class RecruiterView : System.Web.UI.Page
         {
             Response.Write(ex.ToString());
         }
+        
 
-
-        recurseElements(xmlDoc.FirstChild, 0);
+        Output.Text = Beautify(xmlDoc);
+    }
+    public static string FormatXMLString(string sUnformattedXML)
+    {
+        XmlDocument xd = new XmlDocument();
+        xd.LoadXml(sUnformattedXML);
+        StringBuilder sb = new StringBuilder();
+        StringWriter sw = new StringWriter(sb);
+        XmlTextWriter xtw = null;
+        XmlWriterSettings settings = new XmlWriterSettings();
+        settings.Indent = true;
+        try
+        {
+            xtw = new XmlTextWriter(sw);
+            xtw.Formatting = Formatting.Indented;
+            xd.WriteTo(xtw);
+        }
+        finally
+        {
+            if (xtw != null)
+                xtw.Close();
+        }
+        return sb.ToString();
     }
 
-    public void recurseElements(XmlNode node, int level)
+    static public string Beautify(XmlDocument doc)
     {
-
-
-
-        if (node.NodeType == XmlNodeType.Element)
+        StringBuilder sb = new StringBuilder();
+        XmlWriterSettings settings = new XmlWriterSettings();
+        
+        settings.Indent = true;
+        settings.IndentChars = "  ";
+        settings.NewLineChars = "\r\n";
+        settings.NewLineHandling = NewLineHandling.Replace;
+        using (XmlWriter writer = XmlWriter.Create(sb, settings))
         {
-            Output.Text += (node.Name);
-
-            foreach (XmlAttribute attr in node.Attributes)
+            
+            doc.Save(writer);
+        }
+        return sb.ToString();
+    }
+    protected void btnDelete_Click(object sender, EventArgs e)
+    {
+        //Establishing sql connection and running update
+            try
             {
-                Output.Text += (attr.Name + "=" + attr.Value + " ");
+                SqlConnection con = new SqlConnection();
+                con.ConnectionString = System.Configuration.ConfigurationManager.ConnectionStrings["AdventureWorks"].ConnectionString;
+                con.Open();
+                string delete = "DELETE FROM HumanResources.JobCandidate WHERE JobCandidateID=@JCID";
+                // create a command and associate it with the connection
+                SqlCommand cmd = new SqlCommand();
+                cmd.CommandText = delete;
+                cmd.Connection = con;
+            
+
+                //Add parameters
+                cmd.Parameters.Add("@JCID", System.Data.SqlDbType.Int).Value = DropDownList1.SelectedIndex;
+
+               
+                cmd.ExecuteNonQuery();
+
+
+                cmd.Dispose();
+                //Close connection
+                con.Close();
+                Response.Write("<script>alert('Job candidate removed.');</script>");
+            }
+            catch (Exception ex)
+            {
+                
             }
 
-        }
-        if (node.NodeType == XmlNodeType.Text)
-            Output.Text += (node.Value);
 
-        Output.Text += "<br>";
 
-        //recurse through the child elements
-
-        foreach (XmlNode child in node.ChildNodes)
-        {
-
-            recurseElements(child, level + 1);
-        }
-
+        
     }
 }

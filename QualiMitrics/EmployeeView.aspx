@@ -119,7 +119,7 @@
 
         <ajaxToolkit:TabPanel runat="server" HeaderText="Status of Current Requests" ID="Tab3">
             <%--Update panels are literally hitler http://forums.asp.net/t/1553854.aspx --%>
-            <asp:UpdatePanel ID="UpdatePanel1" runat="server" UpdateMode="Conditional">
+            
                 <ContentTemplate>
 
 
@@ -135,7 +135,7 @@
 
 
                 </ContentTemplate>
-            </asp:UpdatePanel>
+          
         </ajaxToolkit:TabPanel>
 
         <%--End Panels--%>

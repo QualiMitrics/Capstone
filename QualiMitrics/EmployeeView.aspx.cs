@@ -214,6 +214,12 @@ public partial class EmployeeView : System.Web.UI.Page
         //Find out how many hours the employee is requesting
         int reqHours = sqlMethods.getHours(sdate, edate);
 
+        if (chkSick.Checked == true)
+        {
+            reqHours = 4;
+        }
+        
+
         try
         {
             string query =
