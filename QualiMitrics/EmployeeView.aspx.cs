@@ -8,6 +8,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Text;
 using System.Globalization;
+using Microsoft.Reporting.WebForms;
 
 public partial class EmployeeView : System.Web.UI.Page
 {
@@ -349,5 +350,16 @@ public partial class EmployeeView : System.Web.UI.Page
     protected void btnRefresh_Click(object sender, EventArgs e)
     {
         Response.Write("<script>location.reload();</script>");
+    }
+    protected void ReportViewer1_Init(object sender, EventArgs e)
+    {
+        // Create the sales order number report parameter
+        ReportParameter ID = new ReportParameter();
+        ID.Name = "BE_ID";
+        ID.Values.Add(Session["BEID"].ToString());
+
+        // Set the report parameters for the report
+        ReportViewer1.ServerReport.SetParameters(
+            new ReportParameter[] { ID });
     }
 }

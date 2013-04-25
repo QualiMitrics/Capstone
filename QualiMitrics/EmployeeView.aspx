@@ -1,5 +1,8 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MainMaster.master" AutoEventWireup="true" CodeFile="EmployeeView.aspx.cs" Inherits="EmployeeView" %>
 
+<%@ Register Assembly="Microsoft.ReportViewer.WebForms, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
+    Namespace="Microsoft.Reporting.WebForms" TagPrefix="rsweb" %>
+
 <asp:Content ID="Content3" ContentPlaceHolderID="titleContent" runat="server">
     Employee View
 </asp:Content>
@@ -11,6 +14,7 @@
     <%--Data Source for Details View--%>
     <asp:SqlDataSource
         ID="sdsStatus"
+        
         runat="server"
         ConnectionString="<%$ ConnectionStrings:AdventureWorks %>"
         SelectCommand="SELECT        HumanResources.TimeOff.StartDate, HumanResources.TimeOff.EndDate, Person.Person.FirstName + Person.Person.LastName AS [Name], 
@@ -44,6 +48,13 @@
                 in the form of either spans of days or specific portions of days.  You can 
                 also check the status of your request(s) in the third tab.
                 </p>
+                <rsweb:ReportViewer ID="ReportViewer1" runat="server" Font-Names="Verdana" 
+                    Font-Size="8pt" Height="603px" InteractiveDeviceInfos="(Collection)" 
+                    oninit="ReportViewer1_Init" ProcessingMode="Remote" 
+                    ShowParameterPrompts="False" WaitMessageFont-Names="Verdana" 
+                    WaitMessageFont-Size="14pt" Width="500px">
+                    <ServerReport ReportPath="/Reports/EmployeeSummary" />
+                </rsweb:ReportViewer>
             </ContentTemplate>
         </ajaxToolkit:TabPanel>
         <%--Tab Panel 2--%>
